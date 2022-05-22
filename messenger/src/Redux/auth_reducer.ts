@@ -67,3 +67,10 @@ export const firebase_login = function (_email:string,_password:string):Thunk_ty
         console.log(response);
     }
 }
+export const firebase_popup = function ():Thunk_type {
+    return function (dispatch){
+        Firebase_instance.login_with_popup().then((response)=>{
+            return response;
+        })
+    }
+}

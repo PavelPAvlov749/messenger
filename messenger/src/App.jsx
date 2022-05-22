@@ -20,7 +20,8 @@ export const App_2 = () => {
   const is_auth = useSelector((state) => {
     return state.auth.is_auth
   })
-  return ( is_auth ? 
+  const is_authq = true;
+  return ( is_authq ? 
     <div className='App'>
       <BrowserRouter>
         <h1>WORKS</h1>
@@ -29,6 +30,7 @@ export const App_2 = () => {
       </BrowserRouter>
     </div> : 
     <div className='App'>
+      <Navbar/>
       <Login/>
     </div>
   )

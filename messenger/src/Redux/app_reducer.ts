@@ -31,3 +31,10 @@ export const app_actions = {
         
     } as const )
 }
+
+export const init_thunk = ():any=>{
+    
+    return async function (dispatch:any){
+        return null;
+    }
+}

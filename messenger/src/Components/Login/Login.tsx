@@ -3,7 +3,11 @@ import { Formik, Field, Form } from "formik";
 import {log_in} from "../../Redux/auth_reducer";
 import {useDispatch} from "react-redux";
 import {auth_actions} from "../../Redux/auth_reducer";
-import {Dispatch_type} from "../../Redux/auth_reducer"
+import {Dispatch_type} from "../../Redux/auth_reducer";
+import {firebase_login} from "../../Redux/auth_reducer";
+import {firebase_popup} from "../../Redux/auth_reducer";
+
+
 type Form_type = {
     login: string,
     password: string
@@ -17,7 +21,7 @@ export const Login: React.FC = React.memo(() => {
     const set_submit = (values: Form_type,) => {
         login = values.login;
         password = values.password;
-        dispatch<any>(log_in(login,password))
+        dispatch<any>(firebase_popup())
         console.log("login thunk")
     }
     return (
