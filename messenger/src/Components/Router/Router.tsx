@@ -3,7 +3,7 @@ import React from "react";
 import { BrowserRouter,Navigate,Route,Routes } from "react-router-dom";
 //IMPORTING COMPONETNS
 import { Chat } from "../Chat/Chat";
-import { Login } from "../Login/Login";
+import { Login_container } from "../Login/Login";
 import { My_profile } from "../My_profile/My_profile";
 
 //PATH ROUTES CONSTANTS 
@@ -32,7 +32,7 @@ type RouterProps = {
 const PUBLICK_ROUTES : Array<RouteType>= [
     {
         path : LOGIN,
-        element : <Login/>
+        element : <Login_container/>
     },
     {
         path : no_match_route,
@@ -56,21 +56,26 @@ const PRIVATE_ROUTES = [
 //If props.is_auth equals true returns PRIVATE_ROUTES otherwise PUBLIC_ROUTES
 //Iterates over an Array og Routes and cals element coresponding to path with Array.map() function
 export const Router : React.FC<RouterProps> = (props) => {
-    return (
-        props.is_auth ?
-        <Routes>
-            {PRIVATE_ROUTES.map((el)=> {
-                return (
-                    <Route path={el.path} element={el.element}/>
-                )
-            })} 
-        </Routes> : 
-        <Routes>
-            {PUBLICK_ROUTES.map((el) => {
-                return (
-                    <Route path={el.path} element={el.element}/>
-                )
-            })}
-        </Routes>
-    )
+    
+    if(props.is_auth){
+        return (
+            <Routes>
+                {PRIVATE_ROUTES.map((el) => {
+                    return (
+                        <Route path={el.path} element={el.element}/>
+                    )
+                })}
+            </Routes>
+        )
+    }else {
+        return (
+            <Routes>
+                {PUBLICK_ROUTES.map((el)=> {
+                    return (
+                        <Route path={el.path} element={el.element}/>
+                    )
+                })}
+            </Routes>
+        )
+    }
 }

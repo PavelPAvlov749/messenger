@@ -5,6 +5,7 @@ const SET_INITIALIZE = "SET_INITIALIZE";
 
 let initial_state = {
     is_initialize : false,
+    ghdghd : "sdfsdgsdg"
 }
 //Acrtion types
 type Action_Type = InferActionType<typeof app_actions>;

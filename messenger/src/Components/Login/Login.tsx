@@ -1,28 +1,34 @@
-import React from "react";
+import React, { Dispatch } from "react";
 import { Formik, Field, Form } from "formik";
 import {log_in} from "../../Redux/auth_reducer";
 import {useDispatch} from "react-redux";
-import {auth_actions} from "../../Redux/auth_reducer";
-import {Dispatch_type} from "../../Redux/auth_reducer";
-import {firebase_login} from "../../Redux/auth_reducer";
-import {firebase_popup} from "../../Redux/auth_reducer";
-
+import {Sign_in_with_pop_up} from "../../Redux/auth_reducer";
+import { Global_state_type } from "../../Redux/Store";
+import {connect} from "react-redux";
 
 type Form_type = {
     login: string,
     password: string
 }
+type PropsType = {
+    is_auth : boolean,
+    auth_token? : string | undefined,
+    sign_in : () => void
+}
 
-export const Login: React.FC = React.memo(() => {
-    console.log("LOGIN")
+export const Login: React.FC<PropsType> = React.memo((props) => {
+
     let login = "";
     let password = "";
-    let dispatch = useDispatch()
     const set_submit = (values: Form_type,) => {
         login = values.login;
         password = values.password;
-        dispatch<any>(firebase_popup())
-        console.log("login thunk")
+        props.sign_in();
+
+    }
+    const sign_in_with_google = ()=>{
+        //@ts-ignore
+        props.sign_in();
     }
     return (
         <div className="login">
@@ -36,9 +42,29 @@ export const Login: React.FC = React.memo(() => {
                     <Field type="text" name="password"></Field>
                     <button type="submit">Login</button>
                 </Form>
-
             </Formik>
+            <section className="Sign_in_with_google">
+                <h2>
+                    Sign in with Google
+                </h2>
+                <button type="button" onClick={sign_in_with_google}>Google</button>
+            </section>
         </div>
 
     )
 })
+
+const MapStateToProps = (state:Global_state_type) => {
+    return {
+        is_auth : state.auth.is_auth,
+        auth_token : state.auth.auth_token
+    }
+};
+const MapDispatchToProps = (dispatch : any) => {
+    return {
+        sign_in : () =>{
+            dispatch(Sign_in_with_pop_up())
+        }
+    }
+}
+export const Login_container = connect(MapStateToProps,MapDispatchToProps)(Login);

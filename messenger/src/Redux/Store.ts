@@ -9,7 +9,7 @@ import {auth_reducer} from "../Redux/auth_reducer";
 
 let reducers = combineReducers({
     app : app_reducer,
-    auth : auth_reducer
+    auth : auth_reducer,
 })
 
 type PropertieTypes<T> = T extends {[key:string]:infer U} ? U : never;

@@ -39,4 +39,4 @@ export const auth_api = {
             return response
         })
     }
-}
+};

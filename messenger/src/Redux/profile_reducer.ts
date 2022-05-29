@@ -15,17 +15,17 @@ export type UsersType = {
 
 export type Current_ProfileType = {
     user_name: string | null,
-    id: number | null,
-    avatar: {
-        small: string | null,
-        large: string | null
-    },
-    folowers: Array<UsersType>,
-    subscribers: Array<UsersType>,
-    messages: Array<string>,
-    current_user_posts: Array<PostType>
-    current_user_status: string,
-    is_online: boolean
+    id: string | null,
+    avatar: string | null,
+    followers?: Array<UsersType>  | null,
+    subscribers?: Array<UsersType> | null,
+    messages: Array<string> | null,
+    current_user_posts: Array<PostType> | null,
+    current_user_status: string | null,
+    is_online: boolean,
+    isAnonymoys : boolean,
+    phone : string | null,
+    email : string | null
 }
 
 let initial_state = {

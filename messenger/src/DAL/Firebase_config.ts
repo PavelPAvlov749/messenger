@@ -1,5 +1,6 @@
+
+//...............................HERE IS THE FIREBASE IMPORTS>>>>>>>>>>>>>>
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import "firebase/firestore";
 import "firebase/auth";
 //Firebase hooks 
@@ -12,27 +13,44 @@ import {
     signInWithPopup,
     GoogleAuthProvider,
     signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signInWithCredential
 } from "firebase/auth";
+import { Provider } from "react-redux";
+import { auth_actions } from "../Redux/auth_reducer";
+import { useDispatch } from "react-redux";
+import { profile_actions } from "../Redux/profile_reducer";
+import { async } from "@firebase/util";
 
 
 //Here is the config file of Firebase SDK to allow the functions use Firebase_instance object
+
 const firebaseConfig = {
     apiKey: "AIzaSyBZoW7Tcp26aJ_7_zDEuMO9hDUzfiJxv8M",
     authDomain: "messenger-40cc4.firebaseapp.com",
     projectId: "messenger-40cc4",
     storageBucket: "messenger-40cc4.appspot.com",
     messagingSenderId: "856002256521",
-    appId: "1:856002256521:web:0be5cbb812449f12b93058"
+    appId: "1:856002256521:web:0be5cbb812449f12b93058",
+    
 };
-
-const firebase = initializeApp(firebaseConfig);
-
-
-const Firebase_auth = getAuth();
-const Sign_in = signInWithEmailAndPassword;
+//Firebase auth type
 type AuthType = typeof Firebase_auth;
-const user_1 = Firebase_auth.currentUser
-console.log(user_1)
+
+//Initializing the Firebase instance and creating Firebase auth object then initializing GoggleAuthProvider Object
+//Firebase instance
+const firebase = initializeApp(firebaseConfig);
+//Firebase auth instance
+//Firebase instance gigiving the acsess to all user auth pearametrs and functions and configs
+
+export const Firebase_auth = getAuth();
+//Google Provider
+export const google_provider = new GoogleAuthProvider();
+//Sign in instanse will be need foe auth with login and password (NOT GOOGLE!)
+const Sign_in = signInWithEmailAndPassword;
+console.log(Firebase_auth.currentUser)
+
+//Custom Firebsae instance object withc is contains all auth functions in the app
 export const Firebase_instance = {
     sign_in: (_email: string, _password: string) => {
         Sign_in(Firebase_auth, _email, _password).then((response) => {
@@ -40,29 +58,49 @@ export const Firebase_instance = {
             return response
         })
     },
-    sign_out: () => {
+    sign_out: (_dispatch:any) => {
         signOut(Firebase_auth).then((response) => {
-            console.log(response);
+            _dispatch(auth_actions.set_auth_false())
             return response;
+        }).catch((error) => {
+            console.log("ERROR WHILE SIGING OUT " + error)
         })
     },
     create_user: (_auth: AuthType, _email: string, _password: string) => {
         createUserWithEmailAndPassword(Firebase_auth, _email, _password).then((response) => {
             console.log(response);
             return response;
-
         })
     },
-    login_with_popup: async () => {
-        const provider = new GoogleAuthProvider();
-        const user_1 = Firebase_auth.currentUser
-        console.log(user_1)
-
-        const { user } = await signInWithPopup(Firebase_auth, provider).then((response) => {
-            console.log(response)
-            return response;
+    login_with_popup: async () => { 
+        await signInWithPopup(Firebase_auth,google_provider).then((result) =>{
+            let credential = GoogleAuthProvider.credentialFromResult(result);
+            let auth_token = credential?.accessToken;
+            let user = result.user;
+            console.log(user)
+            return user
+        }).catch((error) => {
+            const error_code = error.code;
+            console.log("SOME ERROR OCCURED" + error);
         })
-
-        return (user)
+        
+    },
+    get_current_user : async () => {
+       const user = await Firebase_auth.currentUser;
+       return user
     }
+}
+//Sign with PopUp response type uses in auth reducer
+export type Login_response_type = {
+    user? : {
+        displayName : string | null,
+        user_id : string,
+        email : string | null,
+        is_Anonymous : boolean,
+        emailVerified : boolean,
+        phoine : number | null,
+        photoURL : string | null,
+        last_sign_in_time : string | undefined
+    },
+    auth_token? : string | undefined
 }
