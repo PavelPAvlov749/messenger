@@ -15,7 +15,7 @@ export const Navbar: React.FC<PropsType> = React.memo((props) => {
 
 
     let is_auth = useSelector((state:Global_state_type) => {
-        return state.auth
+        return state.auth.is_auth
     })
     const logout = () => {
         props.log_out()

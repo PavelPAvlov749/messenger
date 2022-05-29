@@ -5,11 +5,13 @@ import thunk from "redux-thunk";
 import { compose } from "redux";
 import {app_reducer} from "../Redux/app_reducer";
 import {auth_reducer} from "../Redux/auth_reducer";
+import { Profile_reducer } from "./profile_reducer";
 
 
 let reducers = combineReducers({
     app : app_reducer,
     auth : auth_reducer,
+    profile : Profile_reducer
 })
 
 type PropertieTypes<T> = T extends {[key:string]:infer U} ? U : never;

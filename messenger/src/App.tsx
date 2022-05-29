@@ -1,90 +1,98 @@
-import React from 'react';
-import logo from './logo.svg';
+//Importing styles
 import './App.css';
-
 //REACT IMPORTS
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { Navbar_container } from './Components/Navbar/Navbar';
-import { Chat } from './Components/Chat/Chat';
-import { Login } from './Components/Login/Login';
-import { My_profile } from './Components/My_profile/My_profile';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { Router } from './Components/Router/Router';
-import { Global_state_type } from './Redux/Store';
-import { Firebase_instance } from './DAL/Firebase_config';
-import { auth_actions } from './Redux/auth_reducer';
+//Importing Firebase instance witch contains all Firebase data access functions 
+import { Firebase_auth, Firebase_instance } from './DAL/Firebase_config';
+import { onAuthStateChanged } from 'firebase/auth';
 //Importing React Components
 import { Login_container } from './Components/Login/Login';
+import { Navbar_container } from './Components/Navbar/Navbar';
+import { Chat } from './Components/Chat/Chat';
+import { My_profile } from './Components/My_profile/My_profile';
+//Importing redux action creators and Thunk-creators
+import { Get_auth } from './Redux/auth_reducer';
+import { auth_actions } from './Redux/auth_reducer';
+import { app_actions } from './Redux/app_reducer';
+//Import for Application Router
+import { Router } from './Components/Router/Router';
+//Importing Global state type
+import { Global_state_type } from './Redux/Store';
+//Redux,React-Redux impoirts
+import { connect } from 'react-redux';
 
+//Types for main Application component props
 
-
-
-export const App_2 = () => {
-  const is_auth = useSelector((state: Global_state_type) => {
-    return state.auth.is_auth 
-  })
-
-  return (is_auth ?
-    <div className='App'>
-      <BrowserRouter>
-        <h1>WORKS</h1>
-        <Navbar_container/>
-        <Router is_auth={is_auth} />
-      </BrowserRouter>
-    </div> :
-    <div className='App'>
-      <Navbar_container/>
-      <Login_container />
-    </div>
-  )
+type AppPropsType = {
+  is_auth: boolean,
+  auth_token: string | undefined,
+  is_init: boolean,
+  init: (_is_init: boolean) => void,
+  get_auth: () => void
 }
 
-const App: React.FC = function () {
+//                          ..........................Main Component App ............................
+const App: React.FC<AppPropsType> = function (props) {
   const dispatch = useDispatch();
-  const inittialize = async () => {
-    const user = await Firebase_instance.get_current_user().then((response) => {
-      if(response !== null && response !== undefined){
-        dispatch(auth_actions.set_auth_true());
+  //Function observer is user authorized
+  //If user was authirized set is_auth true in the state if not set is_state fasle
+  //Also set auth token to the state
+  //If is_auth false App component will return Login_container component
+  const checkAuthState = async () => {
+    onAuthStateChanged(Firebase_auth,(user) => {
+      if(user){
+        dispatch(auth_actions.set_auth_true())
       }else{
-        dispatch(auth_actions.set_auth_false());
+        dispatch(auth_actions.set_auth_false())
       }
-    });
-  }
-  inittialize();
-  //Getter for user only for debugging, delete later
-  const get_user = async () => {
-    await Firebase_instance.get_current_user().then((response) => {
-      console.log(response)
     })
   }
-  const is_auth = useSelector((state: Global_state_type) => {
-    return state.auth.is_auth
-  })
-  console.log(is_auth);
-  if (is_auth) {
+  checkAuthState();
+
+  if (props.is_auth) {
     return (
       <div className='App'>
         <BrowserRouter>
-          <Navbar_container/>
-          <Router is_auth={is_auth}></Router>
-          <button type='button' onClick={get_user}>Get</button>
+          <Navbar_container />
+          <Routes>
+            <Route path='/me' element={<My_profile />}></Route>
+            <Route path='/chat' element={<Chat />} />
+            <Route path="*" element={<My_profile />}></Route>
+          </Routes>
         </BrowserRouter>
+
       </div>
     )
   } else {
     return (
       <div className='App'>
         <BrowserRouter>
-          <Navbar_container/>
-          <Router is_auth={is_auth}></Router>
-          <button type="button" onClick={get_user}>Get</button>
-
+          <Navbar_container />
+          <Login_container />
         </BrowserRouter>
       </div>
     )
   }
 }
 
-export default App;
+const MapStateToProps = (state: Global_state_type) => {
+  return {
+    is_auth: state.auth.is_auth,
+    auth_token: state.auth.auth_token,
+    is_init: state.app.is_initialize
+  }
+}
+const MapDispatchToProps = (dipsatch: any) => {
+  return {
+    init: (_is_init: boolean) => {
+      dipsatch(app_actions.init(_is_init))
+    },
+    get_auth: () => {
+      dipsatch(Get_auth());
+    }
+  }
+}
+
+export const App_container = connect(MapStateToProps, MapDispatchToProps)(App);

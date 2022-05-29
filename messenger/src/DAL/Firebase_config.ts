@@ -14,7 +14,7 @@ import {
     GoogleAuthProvider,
     signInWithEmailAndPassword,
     onAuthStateChanged,
-    signInWithCredential
+    signInWithCredential,
 } from "firebase/auth";
 import { Provider } from "react-redux";
 import { auth_actions } from "../Redux/auth_reducer";
