@@ -1,11 +1,10 @@
 import { InferActionType } from "./Store";
-
+import { CheckAuthState, Thunk_type } from "./auth_reducer";
 
 const SET_INITIALIZE = "SET_INITIALIZE";
 
 let initial_state = {
     is_initialize : false,
-    ghdghd : "sdfsdgsdg"
 }
 //Acrtion types
 type Action_Type = InferActionType<typeof app_actions>;
@@ -15,7 +14,7 @@ export const app_reducer = (state = initial_state,action:Action_Type) => {
         case SET_INITIALIZE : {
             return {
                 ...state,
-                is_initialize : action.payload
+                is_initialize : false
             }
         }
         default : 
@@ -25,17 +24,14 @@ export const app_reducer = (state = initial_state,action:Action_Type) => {
 
 export const app_actions = {
     //Initialize action
-    init : (_value:boolean) => (
+    init : () => (
         {
             type : "SET_INITIALIZE",
-            payload : _value
         
     } as const )
 }
 
-export const init_thunk = ():any=>{
+export const initialize = () =>  (dispatch:any) => {
+    dispatch(app_actions.init())
     
-    return async function (dispatch:any){
-        return null;
-    }
 }

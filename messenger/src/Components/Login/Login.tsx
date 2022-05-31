@@ -1,7 +1,5 @@
 import React, { Dispatch } from "react";
 import { Formik, Field, Form } from "formik";
-import {log_in} from "../../Redux/auth_reducer";
-import {useDispatch} from "react-redux";
 import {Sign_in_with_pop_up} from "../../Redux/auth_reducer";
 import { Global_state_type } from "../../Redux/Store";
 import {connect} from "react-redux";

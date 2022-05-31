@@ -52,12 +52,6 @@ console.log(Firebase_auth.currentUser)
 
 //Custom Firebsae instance object withc is contains all auth functions in the app
 export const Firebase_instance = {
-    sign_in: (_email: string, _password: string) => {
-        Sign_in(Firebase_auth, _email, _password).then((response) => {
-            console.log(response)
-            return response
-        })
-    },
     sign_out: (_dispatch:any) => {
         signOut(Firebase_auth).then((response) => {
             _dispatch(auth_actions.set_auth_false())
@@ -88,7 +82,8 @@ export const Firebase_instance = {
     get_current_user : async () => {
        const user = await Firebase_auth.currentUser;
        return user
-    }
+    },
+    Get_auth_state : onAuthStateChanged
 }
 //Sign with PopUp response type uses in auth reducer
 export type Login_response_type = {

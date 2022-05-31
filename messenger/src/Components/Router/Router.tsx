@@ -42,6 +42,14 @@ const PUBLICK_ROUTES : Array<RouteType>= [
 //Routes available only for authorized users
 const PRIVATE_ROUTES = [
     {
+        paht : NEWS,
+        element : null
+    },
+    {
+        path : USERS,
+        element : null
+    },
+    {
         path : ME,
         element : <My_profile/>
     },
