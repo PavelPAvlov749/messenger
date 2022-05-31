@@ -133,7 +133,7 @@ export const CheckAuthState = ():Thunk_type => {
         await Firebase_instance.Get_auth_state(Firebase_auth,(user) => {
             if(user){
                 dispatch(auth_actions.set_auth_true());
-                dispatch(auth_actions.set_auth_token(user.getIdToken.toString()))
+                dispatch(auth_actions.set_auth_token(""))
                 dispatch(auth_actions.initialize())
             }else{
                 dispatch(auth_actions.set_auth_false());

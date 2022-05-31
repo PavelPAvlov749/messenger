@@ -16,32 +16,35 @@ export type UsersType = {
 }
 
 export type Current_ProfileType = {
-    user_name: string | null | undefined,
-    id: string | undefined,
-    avatar: string | null | undefined,
+    user_name?: string | undefined | null,
+    id?: string | undefined | null,
+    avatar?: string | null | undefined,
     followers?: Array<UsersType> | null,
     subscribers?: Array<UsersType> | null,
-    messages: Array<string> | null,
-    current_user_posts: Array<PostType> | null,
-    current_user_status: string | null,
-    is_online: boolean,
-    isAnonymoys: boolean | undefined,
-    phone: string | null | undefined,
-    email: string | null | undefined
+    messages?: Array<string> | null,
+    current_user_posts?: Array<PostType> | null,
+    current_user_status?: string | null,
+    is_online?: boolean,
+    isAnonymoys?: boolean | undefined,
+    phone?: string | null | undefined,
+    email?: string | null | undefined
+}
+type initial_state_type = {
+    profile : Current_ProfileType
 }
 
-let initial_state = {
-
-    user_name: null,
-    id: null,
-    avatar: null,
-    followers: null,
-    subscribers: null,
-    messages: null,
-    current_user_posts: null,
-    current_user_status: null,
-    is_online: false
-
+let initial_state : initial_state_type = {
+    profile: {
+        user_name: null,
+        id: null,
+        avatar: undefined,
+        followers: null,
+        subscribers: null,
+        messages: null,
+        current_user_posts: null,
+        current_user_status: null,
+        is_online: false
+    }
 };
 
 export const Profile_reducer = (state = initial_state, action: ActionType) => {
@@ -51,7 +54,7 @@ export const Profile_reducer = (state = initial_state, action: ActionType) => {
                 ...state,
                 profile: { ...action.payload }
             }
-        default : 
+        default:
             return state
     }
 }
@@ -63,7 +66,7 @@ export const profile_actions = {
     } as const),
 }
 
-export const Set_user_thunk = (): Thunk_type => {
+export const Get_current_user_thunk = (): Thunk_type => {
     return async function (dispatch: any) {
         const result = await Firebase_instance.get_current_user().then((result) => {
             let user: Current_ProfileType = {
@@ -82,7 +85,6 @@ export const Set_user_thunk = (): Thunk_type => {
             };
             console.log("USER THUNK : " + user);
             dispatch(profile_actions.set_current_user_profile(user))
-            return result
         })
 
     }

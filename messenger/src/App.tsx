@@ -39,14 +39,21 @@ const App: React.FC<AppPropsType> = function (props) {
   //Also set auth token to the state
   //If is_auth false App component will return Login_container component this function comes from auth reducer and user Firebase_instance function "Get_auth"
 
-   props.Get_auth_Thunk();
-
+  props.Get_auth_Thunk();
+  const get_user = async () => {
+    await Firebase_instance.get_current_user().then((user) => {
+      console.log(user)
+      console.log("Button")
+    })
+    
+  }
   if (props.is_init) {
     return (
       <div className='App'>
         <BrowserRouter>
           <Navbar_container />
           <Router is_auth={props.is_auth}/>
+          <button type='button' onClick={get_user}>Get user</button>
         </BrowserRouter>
 
       </div>

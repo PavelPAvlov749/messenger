@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {Post} from "../Post/Post";
+import {Current_ProfileType, Get_current_user_thunk} from "../../Redux/profile_reducer";
+import {connect} from "react-redux";
+import { Global_state_type } from "../../Redux/Store";
 
-type PropsType = {
 
+type MyProfilePropsType = {
+    current_user_profile : Current_ProfileType
+    get_current_user : () => void
 }
 type StatusProps = {
 
 }
 type InfoPropsType = {
     age : number ,
-    name : string ,
+    name : string | null | undefined,
     number_of_subscribers : number,
     number_of_folowers : number,
     is_auth? : boolean
@@ -35,7 +40,7 @@ const Information : React.FC<InfoPropsType> = (props) => {
         </div>
     )
 }
-const My_posts : React.FC<PropsType> = (props) => {
+const My_posts : React.FC = (props:any) => {
     return (
         <div className="my_posts">
             <hr></hr>
@@ -44,9 +49,13 @@ const My_posts : React.FC<PropsType> = (props) => {
     )
 }
 
-export const My_profile : React.FC<PropsType> = (props) => {
+export const My_profile : React.FC<MyProfilePropsType> = (props) => {
+    useEffect(() => {
+        props.get_current_user();
+    },[])
+
     const default_avatar = "https://i.stack.imgur.com/rYsym.png";
-    const avatar = null;
+    const avatar = props.current_user_profile.avatar;
     const set_avatar = () => {
         console.log("Setting avatar")
     }
@@ -56,9 +65,22 @@ export const My_profile : React.FC<PropsType> = (props) => {
                 <img src={avatar === null ? default_avatar : avatar} alt="#" onClick={set_avatar}></img>
             </section>
             <Status/>
-            <Information age={20} name="Paul" number_of_folowers={167} number_of_subscribers={560}/>
+            <Information age={20} name={props.current_user_profile.user_name} number_of_folowers={167} number_of_subscribers={560}/>
         </div>
 
     )
 }
 
+let MapStateToProps = (state : Global_state_type) => {
+    return {
+        current_user_profile : state.profile.profile
+    }
+}
+let MapDispatchToProps = (dispatch:any) => {
+    return {
+        get_current_user : () => {
+            dispatch(Get_current_user_thunk());
+        }
+    }
+}
+export const My_profile_container = connect(MapStateToProps,MapDispatchToProps)(My_profile);

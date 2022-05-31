@@ -4,7 +4,7 @@ import { BrowserRouter,Navigate,Route,Routes } from "react-router-dom";
 //IMPORTING COMPONETNS
 import { Chat } from "../Chat/Chat";
 import { Login_container } from "../Login/Login";
-import { My_profile } from "../My_profile/My_profile";
+import { My_profile_container } from "../My_profile/My_profile";
 
 //PATH ROUTES CONSTANTS 
 const LOGIN = "/login"
@@ -51,7 +51,7 @@ const PRIVATE_ROUTES = [
     },
     {
         path : ME,
-        element : <My_profile/>
+        element : <My_profile_container/>
     },
     {
         path : CHAT,
