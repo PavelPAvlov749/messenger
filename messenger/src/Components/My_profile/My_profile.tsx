@@ -56,13 +56,14 @@ export const My_profile : React.FC<MyProfilePropsType> = (props) => {
 
     const default_avatar = "https://i.stack.imgur.com/rYsym.png";
     const avatar = props.current_user_profile.avatar;
+    console.log(avatar)
     const set_avatar = () => {
         console.log("Setting avatar")
     }
     return (
         <div className="my_profile">
             <section className="avatar">
-                <img src={avatar === null ? default_avatar : avatar} alt="#" onClick={set_avatar}></img>
+                <img src={avatar === null || undefined ? default_avatar : avatar} alt="#" onClick={set_avatar}></img>
             </section>
             <Status/>
             <Information age={20} name={props.current_user_profile.user_name} number_of_folowers={167} number_of_subscribers={560}/>

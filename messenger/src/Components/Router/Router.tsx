@@ -42,6 +42,10 @@ const PUBLICK_ROUTES : Array<RouteType>= [
 //Routes available only for authorized users
 const PRIVATE_ROUTES = [
     {
+        path: LOGIN,
+        element : <Navigate to="/me" replace/>
+    },
+    {
         paht : NEWS,
         element : null
     },

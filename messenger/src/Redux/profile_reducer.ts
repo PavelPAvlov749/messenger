@@ -18,7 +18,7 @@ export type UsersType = {
 export type Current_ProfileType = {
     user_name?: string | undefined | null,
     id?: string | undefined | null,
-    avatar?: string | null | undefined,
+    avatar?: string | undefined | null,
     followers?: Array<UsersType> | null,
     subscribers?: Array<UsersType> | null,
     messages?: Array<string> | null,
@@ -37,7 +37,7 @@ let initial_state : initial_state_type = {
     profile: {
         user_name: null,
         id: null,
-        avatar: undefined,
+        avatar: null,
         followers: null,
         subscribers: null,
         messages: null,
