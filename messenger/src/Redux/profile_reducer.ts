@@ -3,10 +3,13 @@ import { PostType } from "../Components/Post/Post";
 import { Firebase_instance } from "../DAL/Firebase_config";
 import { Thunk_type } from "./auth_reducer";
 import { InferActionType } from "./Store";
+import { Firestore_instance } from "../DAL/Firestore_config";
+import { profile } from "console";
 
 
 
 const SET_CURRENT_USER_PROFILE = "messenger/profile_reducer/set_current_user+profile";
+const SET_MESSAGES = "messenger/profile_reducer/set_messages";
 
 
 type ActionType = InferActionType<typeof profile_actions>;
@@ -31,6 +34,7 @@ export type Current_ProfileType = {
 }
 type initial_state_type = {
     profile : Current_ProfileType
+    messages : Array<any>
 }
 
 let initial_state : initial_state_type = {
@@ -44,16 +48,25 @@ let initial_state : initial_state_type = {
         current_user_posts: null,
         current_user_status: null,
         is_online: false
-    }
+    },
+    messages : []
 };
 
 export const Profile_reducer = (state = initial_state, action: ActionType) => {
     switch (action.type) {
         case SET_CURRENT_USER_PROFILE:
+            {
             return {
                 ...state,
-                profile: { ...action.payload }
+                profile: {...state.profile,...action.payload}
             }
+        }
+        case SET_MESSAGES : { 
+            return {
+                ...state,
+                messages: {...state.messages,...action.payload}
+            }
+        }
         default:
             return state
     }
@@ -64,8 +77,12 @@ export const profile_actions = {
         type: "messenger/profile_reducer/set_current_user+profile",
         payload: _profile
     } as const),
+    set_messages : (_mesasges:any) => ({
+        type : "messenger/profile_reducer/set_messages",
+        payload : {_mesasges}
+    } as const) 
 }
-
+//Get user profile thunk
 export const Get_current_user_thunk = (): Thunk_type => {
     return async function (dispatch: any) {
         const result = await Firebase_instance.get_current_user().then((result) => {
@@ -87,5 +104,14 @@ export const Get_current_user_thunk = (): Thunk_type => {
             dispatch(profile_actions.set_current_user_profile(user))
         })
 
+    }
+};
+//Get users messages thunk
+export const Get_messages_thunk = (): Thunk_type => {
+    return async function (dispatch:any) {
+        Firestore_instance.Get_collection().then((response) => {
+            console.log(response)
+            dispatch(profile_actions.set_messages(response))
+        })
     }
 }

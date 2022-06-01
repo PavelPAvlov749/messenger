@@ -1,50 +1,69 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../Styles/Chat.module.css";
+import {Firestore_instance} from "../../DAL/Firestore_config";
+import { useDispatch, useSelector } from "react-redux";
+import { Global_state_type } from "../../Redux/Store";
+import {profile_actions} from "../../Redux/profile_reducer";
+import {Get_messages_thunk} from "../../Redux/profile_reducer";
+import { startAfter } from "firebase/firestore";
+import { connect } from "react-redux";
+import {Get_messages_thunk_2, Message_type} from "../../Redux/Chat_reducer";
 
 type PropsType = {
-    
+    messages? : Message_type[],
+    get_messages : () => void
 }
-type MessageType = {
-    user_name: string,
-    user_id?: number,
-    message: string,
-    avatar: string
-};
 
 const Messages :React.FC<PropsType> = (props)=>{
-    const messages : Array<MessageType> = []
+    let messages = useSelector((state:Global_state_type) => {
+        return state.chat.messages
+    })
     return (
         <div className={styles.messages}>
-            {messages.map((el)=>{
+
+            {messages.length === 0 && messages === undefined ? null : 
+            messages.map((el:Message_type)=>{
                 return (
-                    <Mesage avatar={el.avatar} message={el.message} user_name={el.user_name}/>
+                    <Mesage message_text={el.message_text} message_status={el.message_status} 
+                    sender={el.sender} user_id={el.user_id} createdAt={el.createdAt}/>
                 )
             })}
         </div>
 
     )
 }
-const Mesage : React.FC<MessageType> = (props) => {
+const Mesage : React.FC<Message_type> = (props) => {
+
+    console.log("SINGLE MESSAGE COMPOINENT")
     return (
         <div className={styles.message}>
-            <img src={props.avatar} alt="#" />
             <b>
-                {props.user_name}
+                {props.sender}
             </b>
+            
             <br />
-            {props.message}
-            <hr></hr>
+            {props.message_text === "" ? "Empty string" : props.message_text}
         </div>
 
     )
 }
 
-const Chat_input : React.FC<PropsType> = (props) =>{
+const Chat_input : React.FC<PropsType> = React.memo((props) =>{
+    
+    useEffect(() => {
+        props.get_messages();
+    })
     let [new_message,set_new_message] = useState("");
-
+    let user_id = useSelector((state:Global_state_type) => {
+        return state.profile.profile.id
+    });
+    let user_name = useSelector((state:Global_state_type) => {
+        return state.profile.profile.user_name;
+    });
     const send_message = function (){
-        
+        Firestore_instance.Send_message(new_message,user_name,user_id)
         console.log(new_message);
+        set_new_message("")
     }
     return (
         <div>
@@ -62,13 +81,33 @@ const Chat_input : React.FC<PropsType> = (props) =>{
 
     </div>
     )
-}
+})
 
 export const Chat : React.FC<PropsType> = (props) => {
+   useEffect(() => {
+       props.get_messages()
+   },[])
+   
+    console.log(props.messages)
     return (
         <div className={styles.chat}>
-            <Messages/>
-            <Chat_input/>
+            <Messages messages={props.messages} get_messages={props.get_messages}/>
+            <Chat_input get_messages={props.get_messages}/>
         </div>
     )
 }
+
+const MapStateToProps = (state:Global_state_type) => {
+    return {
+        messages : state.chat.messages
+    }
+};
+const MapDispatchToProps = (dispatch:any) => {
+    return {
+        get_messages : () => {
+            dispatch(Get_messages_thunk_2())
+        }
+    }
+}
+
+export const Chat_container = connect(MapStateToProps,MapDispatchToProps)(Chat);

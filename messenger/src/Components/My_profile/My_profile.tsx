@@ -34,9 +34,9 @@ const Information : React.FC<InfoPropsType> = (props) => {
     return (
         <div className="infirmation_user">
             <h2>{props.name}</h2>
-            <span>{props.age} yo</span>
-            <span>{props.number_of_folowers} followers</span>
-            <span>{props.number_of_subscribers} subscribers</span>
+            <span>{props.age + "   "} yo</span>
+            <span>{" " + props.number_of_folowers + "  "}followers</span>
+            <span>{" " + props.number_of_subscribers + "   "} subscribers</span>
         </div>
     )
 }

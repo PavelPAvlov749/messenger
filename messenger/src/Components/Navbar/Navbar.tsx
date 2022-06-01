@@ -6,7 +6,6 @@ import {Firebase_instance} from "../../DAL/Firebase_config";
 import {auth_actions, Log_out_thunk} from "../../Redux/auth_reducer";
 import { connect } from "react-redux";
 
-
 type PropsType = {
     log_out : () => void
 }
@@ -23,7 +22,6 @@ export const Navbar: React.FC<PropsType> = React.memo((props) => {
 
     return (
         <div className="navbar">
-            <h2>Navbar</h2>
             <ul>
                 <li>
                     <NavLink to="/chat">

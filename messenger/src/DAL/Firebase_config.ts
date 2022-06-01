@@ -21,11 +21,12 @@ import { auth_actions } from "../Redux/auth_reducer";
 import { useDispatch } from "react-redux";
 import { profile_actions } from "../Redux/profile_reducer";
 import { async } from "@firebase/util";
+import { collection, getDocs, getFirestore, query } from "firebase/firestore";
 
 
 //Here is the config file of Firebase SDK to allow the functions use Firebase_instance object
 
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyBZoW7Tcp26aJ_7_zDEuMO9hDUzfiJxv8M",
     authDomain: "messenger-40cc4.firebaseapp.com",
     projectId: "messenger-40cc4",
@@ -39,7 +40,7 @@ type AuthType = typeof Firebase_auth;
 
 //Initializing the Firebase instance and creating Firebase auth object then initializing GoggleAuthProvider Object
 //Firebase instance
-const firebase = initializeApp(firebaseConfig);
+export const firebase = initializeApp(firebaseConfig);
 //Firebase auth instance
 //Firebase instance gigiving the acsess to all user auth pearametrs and functions and configs
 
@@ -99,3 +100,4 @@ export type Login_response_type = {
     },
     auth_token? : string | undefined
 }
+

@@ -20,7 +20,13 @@ import { Global_state_type } from './Redux/Store';
 //Redux,React-Redux impoirts
 import { connect } from 'react-redux';
 //IMPORTING PRELOADER
-import {Preloader} from "./Components/Preloader/Preloader";
+import { Preloader } from "./Components/Preloader/Preloader";
+import { Firestore_instance } from "./DAL/Firestore_config";
+
+
+
+
+
 
 //Types for main Application component props
 
@@ -29,7 +35,7 @@ type AppPropsType = {
   auth_token: string | undefined,
   is_init: boolean,
   init: () => void,
-  Get_auth_Thunk : () =>  void
+  Get_auth_Thunk: () => void
 }
 
 //                          ..........................Main Component App ............................
@@ -40,29 +46,20 @@ const App: React.FC<AppPropsType> = function (props) {
   //If is_auth false App component will return Login_container component this function comes from auth reducer and user Firebase_instance function "Get_auth"
 
   props.Get_auth_Thunk();
-  const get_user = async () => {
-    await Firebase_instance.get_current_user().then((user) => {
-      console.log(user)
-      console.log("Button")
-    })
-    
-  }
   if (props.is_init) {
     return (
       <div className='App'>
         <BrowserRouter>
           <Navbar_container />
-          <Router is_auth={props.is_auth}/>
-          <button type='button' onClick={get_user}>Get user</button>
+          <Router is_auth={props.is_auth} />
         </BrowserRouter>
-
       </div>
     )
   } else {
     return (
       <div className='App'>
         <BrowserRouter>
-          <Preloader/>
+          <Preloader />
         </BrowserRouter>
       </div>
     )
@@ -81,7 +78,7 @@ const MapDispatchToProps = (dipsatch: any) => {
     init: () => {
       dipsatch(initialize())
     },
-    Get_auth_Thunk : () => {
+    Get_auth_Thunk: () => {
       dipsatch(CheckAuthState())
     }
   }

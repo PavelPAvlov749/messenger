@@ -5,6 +5,7 @@ import { Global_state_type } from "../../Redux/Store";
 import {connect} from "react-redux";
 import {Navigate} from "react-router-dom"
 
+
 type Form_type = {
     login: string,
     password: string

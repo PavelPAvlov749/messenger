@@ -2,7 +2,7 @@
 import React from "react";
 import { BrowserRouter,Navigate,Route,Routes } from "react-router-dom";
 //IMPORTING COMPONETNS
-import { Chat } from "../Chat/Chat";
+import { Chat_container } from "../Chat/Chat";
 import { Login_container } from "../Login/Login";
 import { My_profile_container } from "../My_profile/My_profile";
 
@@ -59,7 +59,7 @@ const PRIVATE_ROUTES = [
     },
     {
         path : CHAT,
-        element : <Chat/>
+        element : <Chat_container/>
     },
 ]
 
