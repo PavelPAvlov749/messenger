@@ -11,10 +11,11 @@ type ComentType = {
 }
 //Type for single post component
 export type PostType = {
-    comments : Array<ComentType>,
+    comments : Array<ComentType> ,
     likes : number,
     is_open : boolean,
-    post_img : string
+    post_img : string,
+    post_text : string
 }
 //All posts type
 type UserPostsType = {
@@ -25,11 +26,21 @@ type UserPostsType = {
 export const Post : React.FC<PostType> = (props)=>{
     const [is_showing,set_is_showing] = useState(false);
     const show_post = () => {
-        set_is_showing(true)
+        if(is_showing){
+            set_is_showing(false)
+        }else {
+            set_is_showing(true)
+        }
+        
     }
     return (
-        <div className="single_post">
-            <img src={props.post_img} alt="#" onClick={show_post}></img>
+        <div className="single_post" style={{ marginRight : "40%",}}>
+            <br></br>
+            <img src={props.post_img} alt="#" onClick={show_post}
+            style={{
+                width: "220px",
+                height: "220px",
+            }}></img>
             {
             is_showing ? 
             props.comments.map((el) => {
@@ -51,11 +62,13 @@ export const Post : React.FC<PostType> = (props)=>{
 }
 
 export const UserPosts :React.FC<UserPostsType> = (props) => {
+    
     return (
         <div className="user_posts">
-            {props.user_posts.map((el)=>{
+            {props.user_posts ? null : <h3 style={{fontWeight : 500}}>No posts yet ...</h3>}
+            {props.user_posts?.map((el)=>{
                 return (
-                    <Post post_img={el.post_img} comments={el.comments} likes={el.likes} is_open={el.is_open}/>
+                    <Post post_img={el.post_img} comments={el.comments} likes={el.likes} is_open={el.is_open} post_text={el.post_text}/>
                 )
             })}
         </div>

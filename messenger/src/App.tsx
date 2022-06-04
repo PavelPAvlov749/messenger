@@ -22,7 +22,7 @@ import { connect } from 'react-redux';
 //IMPORTING PRELOADER
 import { Preloader } from "./Components/Preloader/Preloader";
 import { Firestore_instance } from "./DAL/Firestore_config";
-
+import { MouseEventHandler } from 'react';
 
 
 
@@ -44,7 +44,6 @@ const App: React.FC<AppPropsType> = function (props) {
   //If user was authirized set is_auth true in the state if not set is_state fasle
   //Also set auth token to the state
   //If is_auth false App component will return Login_container component this function comes from auth reducer and user Firebase_instance function "Get_auth"
-
   props.Get_auth_Thunk();
   if (props.is_init) {
     return (

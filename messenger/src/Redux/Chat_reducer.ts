@@ -1,8 +1,7 @@
 import { ThunkAction } from "redux-thunk";
-import { Get_messages_thunk } from "./profile_reducer";
 import { Global_state_type, InferActionType } from "./Store";
 import { Firestore_instance } from "../DAL/Firestore_config";
-
+import {get} from "firebase/database"
 
 const SEND_MESSAGE = "messenger/chat_reducer/send_message";
 const GET_MESSAGES = "messenger/chat_reducer/get_messages";
@@ -10,11 +9,11 @@ const GET_MESSAGES = "messenger/chat_reducer/get_messages";
 type ActionType = InferActionType<typeof chat_actions>
 type Thunk_type = ThunkAction<void,Global_state_type,unknown,ActionType>
 export type Message_type = {
-    createdAt: string | null,
-    message_status: string,
-    message_text: string,
-    sender: string,
-    user_id: string,
+    createdAt: typeof Date | null,
+    message_status?: string,
+    message_text?: string,
+    sender?: string,
+    user_id?: string,
 }
 
 let initial_state = {
@@ -44,7 +43,7 @@ export const chat_actions = {
         type : "messenger/chat_reducer/send_message",
         payload : _text
     } as const),
-    get_messages : (_messages : Message_type[]) => ({
+    get_messages : (_messages : any) => ({
         type : "messenger/chat_reducer/get_messages",
         payload : {_messages}
     } as const)
@@ -52,12 +51,14 @@ export const chat_actions = {
 
 export const Get_messages_thunk_2 = ():Thunk_type => {
     return async function (dispatch) {
-        let messages = await Firestore_instance.Get_collection().then((response) => {
-            
-            console.log(response)
-            dispatch(chat_actions.get_messages(response))
-            return response
-        })
+        let messages = await Firestore_instance.Get_collection_once().then((response) => {
+            if(response) {
+                dispatch(chat_actions.get_messages(response))
+            }else{
+                dispatch(chat_actions.get_messages(""))
+            }
+        });
+
        
         
     }

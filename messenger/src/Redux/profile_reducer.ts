@@ -106,12 +106,3 @@ export const Get_current_user_thunk = (): Thunk_type => {
 
     }
 };
-//Get users messages thunk
-export const Get_messages_thunk = (): Thunk_type => {
-    return async function (dispatch:any) {
-        Firestore_instance.Get_collection().then((response) => {
-            console.log(response)
-            dispatch(profile_actions.set_messages(response))
-        })
-    }
-}

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import {Post} from "../Post/Post";
+import {Post, PostType} from "../Post/Post";
 import {Current_ProfileType, Get_current_user_thunk} from "../../Redux/profile_reducer";
 import {connect} from "react-redux";
 import { Global_state_type } from "../../Redux/Store";
-
+import {UserPosts} from "../Post/Post";
 
 type MyProfilePropsType = {
     current_user_profile : Current_ProfileType
-    get_current_user : () => void
+    get_current_user : () => void,
+    posts : Array<PostType> 
 }
 type StatusProps = {
 
@@ -67,6 +68,8 @@ export const My_profile : React.FC<MyProfilePropsType> = (props) => {
             </section>
             <Status/>
             <Information age={20} name={props.current_user_profile.user_name} number_of_folowers={167} number_of_subscribers={560}/>
+            
+            <UserPosts  user_posts={props.posts}/>
         </div>
 
     )
@@ -74,7 +77,8 @@ export const My_profile : React.FC<MyProfilePropsType> = (props) => {
 
 let MapStateToProps = (state : Global_state_type) => {
     return {
-        current_user_profile : state.profile.profile
+        current_user_profile : state.profile.profile,
+        posts : state.posts.posts
     }
 }
 let MapDispatchToProps = (dispatch:any) => {

@@ -1,38 +1,45 @@
 import { initializeApp } from "firebase/app";
 import { collection, getDocs, getFirestore, query } from "firebase/firestore";
+import { getDatabase, ref, onValue, set, get ,child} from "firebase/database";
 import { firebase } from "./Firebase_config";
 import { firebaseConfig } from "./Firebase_config";
 import { addDoc } from "firebase/firestore";
+import { chat_actions, Message_type } from "../Redux/Chat_reducer";
+import { useDispatch } from "react-redux";
+import { async } from "@firebase/util";
 
 
 
 //INITIALIZING FIRESTORE INSTANCE;
 const Firestore = getFirestore(firebase);
 
-//APPLICATION FIRESTORE INSTANSE
-export const Firestore_instance = {
-    Get_collection: async () => {
-        const firestore_query = query(collection(Firestore, "chat_firestore"));
-        const query_snapshot = await getDocs(firestore_query).then((data) => data)
-        let data: Array<any> = []
-        query_snapshot.forEach((el) => {
-            data.push(el.data())
-        })
+//Initialize Real-time data base instance 
+const dataBase = getDatabase();
+console.log(dataBase)
+export const writeUserData = async function () {
+    const refrence = await ref(dataBase);
+    onValue(refrence, (snap) => {
+        const data = snap.val();
         console.log(data)
-        return data;
-    },
-    Send_message : async (_text : string | null,_user_name?:string | null | undefined,_user_id? : string | null | undefined) => {
-        try {
-            const docRef = await addDoc(collection(Firestore, "chat_firestore"),
-                {
-                    createdAt: new Date(),
-                    message_status: "unread",
-                    message_text: _text,
-                    sender: _user_name,
-                    user_id: _user_id,
-                });
-        } catch (e) {
-            console.log("ERROR : " + e)
-        }
+    })
+}
+//APPLICATION FIRESTORE INSTANSE
+const reference = ref(dataBase)
+export const Firestore_instance = {
+    Get_collection: onValue(reference, (_snap) => {
+        const data = _snap.val()
+        return data
+    }),
+    Get_collection_once: async () => {
+        const q = query(collection(Firestore, "chat_firestore"));
+        const query_snapshot = await getDocs(q).then((data) => data)
+        let data : any = []
+        query_snapshot.forEach((doc) => {
+            data.push(doc.data())
+        })
+
+        return data
     }
-};
+
+}
+    ;

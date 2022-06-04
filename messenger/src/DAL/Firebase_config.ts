@@ -22,6 +22,7 @@ import { useDispatch } from "react-redux";
 import { profile_actions } from "../Redux/profile_reducer";
 import { async } from "@firebase/util";
 import { collection, getDocs, getFirestore, query } from "firebase/firestore";
+import { getDatabase,set,onValue,ref } from "firebase/database";
 
 
 //Here is the config file of Firebase SDK to allow the functions use Firebase_instance object
@@ -32,15 +33,28 @@ export const firebaseConfig = {
     projectId: "messenger-40cc4",
     storageBucket: "messenger-40cc4.appspot.com",
     messagingSenderId: "856002256521",
-    appId: "1:856002256521:web:0be5cbb812449f12b93058",
+    appId: "1:856002256521:web:0be5cbb812449f12b93058"
     
 };
+
 //Firebase auth type
 type AuthType = typeof Firebase_auth;
 
 //Initializing the Firebase instance and creating Firebase auth object then initializing GoggleAuthProvider Object
 //Firebase instance
 export const firebase = initializeApp(firebaseConfig);
+
+
+//Initialize Real-time data base instance 
+const dataBase = getDatabase();
+console.log(dataBase)
+export const writeUserData = async function () {
+    const refrence = await  ref (dataBase);
+    onValue(refrence,(snap)=>{
+        const data = snap.val();
+        console.log(data)
+    })
+}
 //Firebase auth instance
 //Firebase instance gigiving the acsess to all user auth pearametrs and functions and configs
 

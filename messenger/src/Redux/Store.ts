@@ -7,6 +7,7 @@ import {app_reducer} from "../Redux/app_reducer";
 import {auth_reducer} from "../Redux/auth_reducer";
 import { Profile_reducer } from "./profile_reducer";
 import { chat_reducer } from "./Chat_reducer";
+import {posts_reducer} from "./posts_reducer";
 
 
 
@@ -14,7 +15,8 @@ let reducers = combineReducers({
     app : app_reducer,
     auth : auth_reducer,
     profile : Profile_reducer,
-    chat : chat_reducer
+    chat : chat_reducer,
+    posts : posts_reducer
 })
 
 type PropertieTypes<T> = T extends {[key:string]:infer U} ? U : never;
