@@ -1,9 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { collection, getDocs, getFirestore, query } from "firebase/firestore";
-import { getDatabase, ref, onValue, set, get ,child} from "firebase/database";
+import { collection, getDocs, getFirestore, query, addDoc } from "firebase/firestore";
+import { getDatabase, ref, onValue, set, get, child } from "firebase/database";
 import { firebase } from "./Firebase_config";
 import { firebaseConfig } from "./Firebase_config";
-import { addDoc } from "firebase/firestore";
 import { chat_actions, Message_type } from "../Redux/Chat_reducer";
 import { useDispatch } from "react-redux";
 import { async } from "@firebase/util";
@@ -15,12 +14,11 @@ const Firestore = getFirestore(firebase);
 
 //Initialize Real-time data base instance 
 const dataBase = getDatabase();
-console.log(dataBase)
+
 export const writeUserData = async function () {
     const refrence = await ref(dataBase);
     onValue(refrence, (snap) => {
         const data = snap.val();
-        console.log(data)
     })
 }
 //APPLICATION FIRESTORE INSTANSE
@@ -33,13 +31,31 @@ export const Firestore_instance = {
     Get_collection_once: async () => {
         const q = query(collection(Firestore, "chat_firestore"));
         const query_snapshot = await getDocs(q).then((data) => data)
-        let data : any = []
+        let data: any = []
         query_snapshot.forEach((doc) => {
             data.push(doc.data())
         })
 
         return data
-    }
+    },
+    get_posts: async () => {
+        const q = query(collection(Firestore, "posts"));
+        const query_snapshot = await getDocs(q).then((data) => data);
+        let posts: any = [];
+        query_snapshot.forEach((doc) => {
+            posts.push(doc.data())
+        })
+        return posts
+    },
+    add_post: async (text: string, img: string) => {
+        const q = query(collection(Firestore, "posts"));
+        const docRef = await addDoc(collection(Firestore, "posts"), {
+            post_img : img,
+            post_likes_count : 0,
+            post_text : text,
+            userName : "Pavel Pavlov",
+            user_id : "none"
 
+        })
+    }
 }
-    ;

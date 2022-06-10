@@ -1,28 +1,29 @@
 import React, { useEffect, useState } from "react";
-import {Post, PostType} from "../Post/Post";
-import {Current_ProfileType, Get_current_user_thunk} from "../../Redux/profile_reducer";
-import {connect} from "react-redux";
+import { Post, PostType } from "../Post/Post";
+import { Current_ProfileType, Get_current_user_thunk } from "../../Redux/profile_reducer";
+import { connect } from "react-redux";
 import { Global_state_type } from "../../Redux/Store";
-import {UserPosts} from "../Post/Post";
+import { PostsContainer } from "../Post/Post";
+import { Navigate } from "react-router-dom"
 
 type MyProfilePropsType = {
-    current_user_profile : Current_ProfileType
-    get_current_user : () => void,
-    posts : Array<PostType> 
+    current_user_profile: Current_ProfileType
+    get_current_user: () => void,
+    posts: Array<PostType>
 }
 type StatusProps = {
 
 }
 type InfoPropsType = {
-    age : number ,
-    name : string | null | undefined,
-    number_of_subscribers : number,
-    number_of_folowers : number,
-    is_auth? : boolean
+    age: number,
+    name: string | null | undefined,
+    number_of_subscribers: number,
+    number_of_folowers: number,
+    is_auth?: boolean
 }
 
-const Status : React.FC<StatusProps> = (props) => {
-    let [is_status_edit,set_statis_edit] = useState(false);
+const Status: React.FC<StatusProps> = (props) => {
+    let [is_status_edit, set_statis_edit] = useState(false);
     return (
         <div>
             <span>status</span>
@@ -30,8 +31,8 @@ const Status : React.FC<StatusProps> = (props) => {
     )
 }
 
-const Information : React.FC<InfoPropsType> = (props) => {
-    let [is_edit_on,set_edit] = useState(false);
+const Information: React.FC<InfoPropsType> = (props) => {
+    let [is_edit_on, set_edit] = useState(false);
     return (
         <div className="infirmation_user">
             <h2>{props.name}</h2>
@@ -41,7 +42,7 @@ const Information : React.FC<InfoPropsType> = (props) => {
         </div>
     )
 }
-const My_posts : React.FC = (props:any) => {
+const My_posts: React.FC = (props: any) => {
     return (
         <div className="my_posts">
             <hr></hr>
@@ -50,42 +51,51 @@ const My_posts : React.FC = (props:any) => {
     )
 }
 
-export const My_profile : React.FC<MyProfilePropsType> = (props) => {
+export const My_profile: React.FC<MyProfilePropsType> = (props) => {
     useEffect(() => {
         props.get_current_user();
-    },[])
+    }, [])
+    const [is_new_post,set_is_new_post] = useState(false);
+    const add_new_post = function () {
+        set_is_new_post(true)
+    }
 
     const default_avatar = "https://i.stack.imgur.com/rYsym.png";
     const avatar = props.current_user_profile.avatar;
-    console.log(avatar)
     const set_avatar = () => {
         console.log("Setting avatar")
     }
+
     return (
         <div className="my_profile">
-            <section className="avatar">
-                <img src={avatar === null || undefined ? default_avatar : avatar} alt="#" onClick={set_avatar}></img>
-            </section>
-            <Status/>
-            <Information age={20} name={props.current_user_profile.user_name} number_of_folowers={167} number_of_subscribers={560}/>
-            
-            <UserPosts  user_posts={props.posts}/>
+            {!is_new_post ?
+                <div>
+                    <section className="avatar">
+                        <img src={avatar === null || undefined ? default_avatar : avatar} alt="#" onClick={set_avatar}></img>
+                    </section>
+                    <button type="button" onClick={add_new_post}>+</button>
+                    <Status />
+                    <Information age={20} name={props.current_user_profile.user_name} number_of_folowers={167} number_of_subscribers={560} />
+
+                    <PostsContainer />
+                </div> : <Navigate to="/new_post" replace></Navigate>}
+
         </div>
 
     )
 }
 
-let MapStateToProps = (state : Global_state_type) => {
+let MapStateToProps = (state: Global_state_type) => {
     return {
-        current_user_profile : state.profile.profile,
-        posts : state.posts.posts
+        current_user_profile: state.profile.profile,
+        posts: state.posts.posts
     }
 }
-let MapDispatchToProps = (dispatch:any) => {
+let MapDispatchToProps = (dispatch: any) => {
     return {
-        get_current_user : () => {
+        get_current_user: () => {
             dispatch(Get_current_user_thunk());
         }
     }
 }
-export const My_profile_container = connect(MapStateToProps,MapDispatchToProps)(My_profile);
+export const My_profile_container = connect(MapStateToProps, MapDispatchToProps)(My_profile);

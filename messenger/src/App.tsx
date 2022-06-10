@@ -23,6 +23,7 @@ import { connect } from 'react-redux';
 import { Preloader } from "./Components/Preloader/Preloader";
 import { Firestore_instance } from "./DAL/Firestore_config";
 import { MouseEventHandler } from 'react';
+import {get_posts_thunk} from "./Redux/posts_reducer";
 
 
 

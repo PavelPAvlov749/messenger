@@ -3,7 +3,8 @@ import { Formik, Field, Form } from "formik";
 import {Sign_in_with_pop_up} from "../../Redux/auth_reducer";
 import { Global_state_type } from "../../Redux/Store";
 import {connect} from "react-redux";
-import {Navigate} from "react-router-dom"
+import {Navigate} from "react-router-dom";
+import styles from '../../Styles/Login.module.css';
 
 
 type Form_type = {
@@ -32,7 +33,7 @@ export const Login: React.FC<PropsType> = React.memo((props) => {
     }
     
         return (
-            <div className="login">
+            <div className={styles.login}>
                 <h1>Login</h1>
                 <Formik
                     enableReinitialize={true} //<= If true Form will reinitialize after reciving new initial value from state 

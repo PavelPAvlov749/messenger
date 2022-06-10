@@ -1,5 +1,7 @@
 import { InferActionType } from "./Store";
 import { PostType } from "../Components/Post/Post";
+import { auth_api } from "../DAL/Auth_api";
+
 
 const GET_POSTS = "messenger/posts_reducer/get_post";
 type ActionType = InferActionType<typeof posts_actions>
@@ -16,7 +18,6 @@ const posts:Array<PostType> = [
             }
         ],
         likes : 67,
-        is_open : false,
         post_img : "https://wallup.net/wp-content/uploads/2015/12/87646-abstract-orange-diamonds-triangle-geometry-digital_art-artwork-shapes.jpg",
         post_text : "Some debugging post text ..."
     }
@@ -46,3 +47,10 @@ export const posts_actions = {
     } as const )
 }
 
+export const get_posts_thunk = function () {
+    return async (dispatch:any) => {
+        await auth_api.get_posts().then((res)=> {
+            dispatch(posts_actions.get_posts(res))
+        })
+    }
+}

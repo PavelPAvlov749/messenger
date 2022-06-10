@@ -51,15 +51,6 @@ export const chat_actions = {
 
 export const Get_messages_thunk_2 = ():Thunk_type => {
     return async function (dispatch) {
-        let messages = await Firestore_instance.Get_collection_once().then((response) => {
-            if(response) {
-                dispatch(chat_actions.get_messages(response))
-            }else{
-                dispatch(chat_actions.get_messages(""))
-            }
-        });
-
-       
-        
+        let messages = await Firestore_instance.Get_collection()
     }
 }

@@ -47,7 +47,6 @@ export const firebase = initializeApp(firebaseConfig);
 
 //Initialize Real-time data base instance 
 const dataBase = getDatabase();
-console.log(dataBase)
 export const writeUserData = async function () {
     const refrence = await  ref (dataBase);
     onValue(refrence,(snap)=>{
@@ -61,7 +60,7 @@ export const writeUserData = async function () {
 export const Firebase_auth = getAuth();
 //Google Provider
 export const google_provider = new GoogleAuthProvider();
-//Sign in instanse will be need foe auth with login and password (NOT GOOGLE!)
+//Sign in instanse will be need for auth with login and password (NOT GOOGLE!)
 const Sign_in = signInWithEmailAndPassword;
 console.log(Firebase_auth.currentUser)
 
