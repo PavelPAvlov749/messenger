@@ -1,0 +1,23 @@
+.navbar  ul{
+    list-style: none;
+    color: white;
+    height: 50px;
+}
+.navbar a {
+    text-decoration: none;
+    font-weight: 400;
+}
+.navbar li {
+    display: inline-block;
+    padding-right: 15px;
+}
+.navbar {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    background-color: rgba(105, 161, 164, 0.468);
+
+}
+.navbar button {
+    display: inline-block;
+}

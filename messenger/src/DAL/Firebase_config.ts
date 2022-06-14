@@ -16,29 +16,24 @@ import {
     onAuthStateChanged,
     signInWithCredential,
 } from "firebase/auth";
-import { Provider } from "react-redux";
 import { auth_actions } from "../Redux/auth_reducer";
-import { useDispatch } from "react-redux";
-import { profile_actions } from "../Redux/profile_reducer";
-import { async } from "@firebase/util";
 import { collection, getDocs, getFirestore, query } from "firebase/firestore";
-import { getDatabase,set,onValue,ref } from "firebase/database";
+import { getDatabase, set, onValue, ref } from "firebase/database";
 
+//                                                ::::::::::::::::::::::CONFIG THE FIREBASE::::::::::::::::::::::::::
 
 //Here is the config file of Firebase SDK to allow the functions use Firebase_instance object
-
 export const firebaseConfig = {
     apiKey: "AIzaSyBZoW7Tcp26aJ_7_zDEuMO9hDUzfiJxv8M",
     authDomain: "messenger-40cc4.firebaseapp.com",
     projectId: "messenger-40cc4",
     storageBucket: "messenger-40cc4.appspot.com",
     messagingSenderId: "856002256521",
+    databaseURL: "https://messenger-40cc4-default-rtdb.europe-west1.firebasedatabase.app/",
     appId: "1:856002256521:web:0be5cbb812449f12b93058"
-    
+
 };
 
-//Firebase auth type
-type AuthType = typeof Firebase_auth;
 
 //Initializing the Firebase instance and creating Firebase auth object then initializing GoggleAuthProvider Object
 //Firebase instance
@@ -46,27 +41,69 @@ export const firebase = initializeApp(firebaseConfig);
 
 
 //Initialize Real-time data base instance 
-const dataBase = getDatabase();
-export const writeUserData = async function () {
-    const refrence = await  ref (dataBase);
-    onValue(refrence,(snap)=>{
-        const data = snap.val();
-        console.log(data)
-    })
-}
+const dataBase = getDatabase(firebase);
+
 //Firebase auth instance
 //Firebase instance gigiving the acsess to all user auth pearametrs and functions and configs
-
 export const Firebase_auth = getAuth();
+
 //Google Provider
 export const google_provider = new GoogleAuthProvider();
+
 //Sign in instanse will be need for auth with login and password (NOT GOOGLE!)
 const Sign_in = signInWithEmailAndPassword;
-console.log(Firebase_auth.currentUser)
+
+//                                                                ............TYPES............
+//Firebase auth type
+type AuthType = typeof Firebase_auth;
+//Sign with PopUp response type uses in auth reducer
+export type Login_response_type = {
+    user?: {
+        displayName: string | null,
+        user_id: string,
+        email: string | null,
+        is_Anonymous: boolean,
+        emailVerified: boolean,
+        phoine: number | null,
+        photoURL: string | null,
+        last_sign_in_time: string | undefined
+    },
+    auth_token?: string | undefined
+}
+
+
+//                                                              .............INSTANCE............
+
+//Instance of Firebase realtime database with contains in self all methods for detch or add data in database
+const Db_instance = {
+    get_posts: async () => {
+        //Get the refrence of db
+        //First argument is the Firebase database instance
+        //Second argument is the path to collection tah we need
+        const post_ref = await ref(dataBase, "Posts/");
+        const posts = await onValue(post_ref,(snap) => {
+            const data = snap.val();
+            console.log(data);
+        })
+
+        return posts;
+    },
+    add_posts : async (_text:string,_img:string) => {
+        
+    },
+    delete_post : async (_post_id :number) => {
+
+    },
+    edit_post : (post_id:string,_text:string,_img:string) => {
+        
+    }
+}
+Db_instance.get_posts();
+
 
 //Custom Firebsae instance object withc is contains all auth functions in the app
 export const Firebase_instance = {
-    sign_out: (_dispatch:any) => {
+    sign_out: (_dispatch: any) => {
         signOut(Firebase_auth).then((response) => {
             _dispatch(auth_actions.set_auth_false())
             return response;
@@ -80,8 +117,8 @@ export const Firebase_instance = {
             return response;
         })
     },
-    login_with_popup: async () => { 
-        await signInWithPopup(Firebase_auth,google_provider).then((result) =>{
+    login_with_popup: async () => {
+        await signInWithPopup(Firebase_auth, google_provider).then((result) => {
             let credential = GoogleAuthProvider.credentialFromResult(result);
             let auth_token = credential?.accessToken;
             let user = result.user;
@@ -91,26 +128,11 @@ export const Firebase_instance = {
             const error_code = error.code;
             console.log("SOME ERROR OCCURED" + error);
         })
-        
-    },
-    get_current_user : async () => {
-       const user = await Firebase_auth.currentUser;
-       return user
-    },
-    Get_auth_state : onAuthStateChanged
-}
-//Sign with PopUp response type uses in auth reducer
-export type Login_response_type = {
-    user? : {
-        displayName : string | null,
-        user_id : string,
-        email : string | null,
-        is_Anonymous : boolean,
-        emailVerified : boolean,
-        phoine : number | null,
-        photoURL : string | null,
-        last_sign_in_time : string | undefined
-    },
-    auth_token? : string | undefined
-}
 
+    },
+    get_current_user: async () => {
+        const user = await Firebase_auth.currentUser;
+        return user
+    },
+    Get_auth_state: onAuthStateChanged
+}

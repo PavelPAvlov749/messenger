@@ -5,6 +5,7 @@ import { Global_state_type } from "../../Redux/Store";
 import {Firebase_instance} from "../../DAL/Firebase_config";
 import {auth_actions, Log_out_thunk} from "../../Redux/auth_reducer";
 import { connect } from "react-redux";
+import style from "../../Styles/Navbar.module.css";
 
 type PropsType = {
     log_out : () => void
@@ -21,7 +22,7 @@ export const Navbar: React.FC<PropsType> = React.memo((props) => {
     }
 
     return (
-        <div className="navbar">
+        <div className={style.navbar}>
             <ul>
                 <li>
                     <NavLink to="/chat">
@@ -38,8 +39,11 @@ export const Navbar: React.FC<PropsType> = React.memo((props) => {
                         <span>News</span>
                     </NavLink>
                 </li>
+                <li>
+                {is_auth ?  <button type="button" onClick={logout}>log_out</button> : null }
+                </li>
             </ul>
-            {is_auth ?  <button type="button" onClick={logout}>log_out</button> : null }
+           
            
         </div>
     )

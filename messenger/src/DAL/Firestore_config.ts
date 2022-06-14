@@ -43,7 +43,7 @@ export const Firestore_instance = {
         const query_snapshot = await getDocs(q).then((data) => data);
         let posts: any = [];
         query_snapshot.forEach((doc) => {
-            posts.push(doc.data())
+            posts.push({...doc.data(),id: doc.id})
         })
         return posts
     },

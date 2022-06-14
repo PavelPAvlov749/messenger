@@ -100,7 +100,6 @@ export const Get_current_user_thunk = (): Thunk_type => {
                 current_user_status: null,
                 phone: result?.phoneNumber,
             };
-            console.log("USER THUNK : " + user);
             dispatch(profile_actions.set_current_user_profile(user))
         })
 

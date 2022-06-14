@@ -5,8 +5,7 @@ import { Global_state_type } from "../../Redux/Store";
 import {connect} from "react-redux";
 import {Navigate} from "react-router-dom";
 import styles from '../../Styles/Login.module.css';
-
-
+import goole_pic from "../../Media/google_button.png"
 type Form_type = {
     login: string,
     password: string
@@ -39,17 +38,30 @@ export const Login: React.FC<PropsType> = React.memo((props) => {
                     enableReinitialize={true} //<= If true Form will reinitialize after reciving new initial value from state 
                     className="login_forms"
                     initialValues={{ login: login, password: password }} onSubmit={set_submit}>
-                    <Form>
+                    <Form className={styles.form}>
                         <Field type="text" name="login"></Field>
+                        <br />
                         <Field type="text" name="password"></Field>
+                        <br />
+                        <hr>
+                        </hr>
                         <button type="submit">Login</button>
                     </Form>
+                    
                 </Formik>
+                <br />
+                <div className={styles.title}>
+                <span>
+                    <br/>
+                    OR</span>
+                </div>
+               
                 <section className="Sign_in_with_google">
-                    <h2>
-                        Sign in with Google
-                    </h2>
-                    <button type="button" onClick={sign_in_with_google}>Google</button>
+                    <br />
+                   <div className={styles.google_login}>
+                   <button type="button" onClick={sign_in_with_google} className={styles.Google}>Sign in with Google</button>
+                    <img src={goole_pic} alt="#" style={{"display" : "inline-block","width": "40px" ,"height" : "40px","verticalAlign" : "middle"} } />
+                   </div>
                 </section>
             </div>
     

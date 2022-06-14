@@ -4,9 +4,15 @@ import { auth_api } from "../DAL/Auth_api";
 
 
 const GET_POSTS = "messenger/posts_reducer/get_post";
-type ActionType = InferActionType<typeof posts_actions>
-type initial_state_type = typeof initial_state
+const SET_SHOWED_POST = "messenger/posts_reducer/set_showed_post";
 
+
+type ActionType = InferActionType<typeof posts_actions>
+type initial_state_type = {
+    posts : Array<PostType>,
+    showed_post_id : string,
+    showed_post : any
+}
 const posts:Array<PostType> = [
     {
         comments : [
@@ -19,11 +25,14 @@ const posts:Array<PostType> = [
         ],
         likes : 67,
         post_img : "https://wallup.net/wp-content/uploads/2015/12/87646-abstract-orange-diamonds-triangle-geometry-digital_art-artwork-shapes.jpg",
-        post_text : "Some debugging post text ..."
+        post_text : "Some debugging post text ...",
+        id : ""
     }
 ]
-export let initial_state = {
-    posts : posts
+export let initial_state : initial_state_type = {
+    posts : posts,
+    showed_post_id : "",
+    showed_post : {} as PostType
 }
 
 
@@ -35,6 +44,12 @@ export const posts_reducer = (state = initial_state,action: ActionType) => {
                 posts : [...action.payload]
             }
         }
+        case SET_SHOWED_POST : {
+            return {
+                ...state,
+                showed_post : [...state.posts.filter(el => el.id === action.payload)]
+            }
+        }
         default : 
             return state
     }
@@ -44,7 +59,11 @@ export const posts_actions = {
     get_posts : (_posts:Array<PostType>) => ({
         type : "messenger/posts_reducer/get_post",
         payload : _posts
-    } as const )
+    } as const ),
+    set_showed_post : (_post:string) => ({
+        type : "messenger/posts_reducer/set_showed_post",
+        payload : _post
+    } as const)
 }
 
 export const get_posts_thunk = function () {

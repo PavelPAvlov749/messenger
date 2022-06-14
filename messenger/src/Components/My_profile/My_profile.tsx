@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Post, PostType } from "../Post/Post";
+import {  PostType } from "../Post/Post";
 import { Current_ProfileType, Get_current_user_thunk } from "../../Redux/profile_reducer";
 import { connect } from "react-redux";
 import { Global_state_type } from "../../Redux/Store";

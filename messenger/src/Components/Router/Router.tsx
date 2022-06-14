@@ -6,6 +6,7 @@ import { Chat_container } from "../Chat/Chat";
 import { Login_container } from "../Login/Login";
 import { My_profile_container } from "../My_profile/My_profile";
 import { New_post_page } from "../Post/New_post";
+import { SinglePost } from "../Post/Post";
 
 //PATH ROUTES CONSTANTS 
 const LOGIN = "/login"
@@ -16,6 +17,7 @@ const NEWS = "/news"
 const USER_PROFILE = "/profile/:id"
 const no_match_route = "*"
 const NEW_POST = "/new_post"
+const POST = "/post/:id"
 
 
 //                                             ...................TYPES......................
@@ -43,6 +45,10 @@ const PUBLICK_ROUTES : Array<RouteType>= [
 ]
 //Routes available only for authorized users
 const PRIVATE_ROUTES = [
+    {
+        path: POST,
+        element : <SinglePost/>
+    },
     {
         path: NEW_POST,
         element : <New_post_page/>
