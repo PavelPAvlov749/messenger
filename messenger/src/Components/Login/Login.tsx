@@ -60,7 +60,7 @@ export const Login: React.FC<PropsType> = React.memo((props) => {
                     <br />
                    <div className={styles.google_login}>
                    <button type="button" onClick={sign_in_with_google} className={styles.Google}>Sign in with Google</button>
-                    <img src={goole_pic} alt="#" style={{"display" : "inline-block","width": "40px" ,"height" : "40px","verticalAlign" : "middle"} } />
+                    <img src={goole_pic} alt="#" style={{"display" : "inline-block","width": "45px" ,"height" : "40px","verticalAlign" : "middle"} } />
                    </div>
                 </section>
             </div>

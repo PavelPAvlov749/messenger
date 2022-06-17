@@ -1,0 +1,52 @@
+.my_profile{
+    margin-left: 20%;
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: 300px auto;
+    grid-template-rows: 300px auto;
+    grid-template-areas:
+    "A U";
+
+}
+.avatar{
+    grid-area: "A";
+}
+.avatar img {
+    margin-left: 50px;
+    width: 150px;
+    height: 150px;
+    border-radius: 90px;
+}
+.about_user{
+    grid-area: "U";
+    text-align: left;
+    
+}
+.about_user button {
+    height: 30px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    border-color: rgb(142, 140, 140);
+}
+.about_user h2{
+    text-align: left;
+    display: inline;
+    font-weight: 300;
+    font-size: 30px;
+}
+.send_message {
+    width: 150px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+.properties {
+    margin-left: 30px;
+}
+.User_posts {
+    display: grid;
+    grid-template-columns: 300px 300px 300px;
+}
+.single_post {
+
+}

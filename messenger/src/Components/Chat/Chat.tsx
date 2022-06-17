@@ -12,13 +12,20 @@ type PropsType = {
     messages? : Message_type[],
     get_messages : () => void
 }
+const User_list = () => {
+    return (
+        <div className={styles.userlist}>
+
+        </div>
+    )
+}
 
 const Messages :React.FC<PropsType> = (props)=>{
     let messages = useSelector((state:Global_state_type) => {
         return state.chat.messages
     })
     return (
-        <div className={styles.messages}>
+        <div className={styles.messages} >
 
             {messages.length === 0 && messages === undefined ? null : 
             messages.map((el:Message_type)=>{
@@ -62,9 +69,9 @@ const Chat_input : React.FC<PropsType> = React.memo((props) =>{
         set_new_message("")
     }
     return (
+        <div className={styles.message_input}>
         <div>
-        <div>
-            <textarea name="message" id="message_form" cols={133} rows={10} title="message"
+            <textarea name="message" id="message_form" title="message" className={styles.textarea}
                 value={new_message}
                 onChange={(e)=>{set_new_message(e.currentTarget.value)}}
             ></textarea>
@@ -87,6 +94,7 @@ export const Chat : React.FC<PropsType> = (props) => {
     console.log(props.messages)
     return (
         <div className={styles.chat}>
+            <User_list/>
             <Messages messages={props.messages} get_messages={props.get_messages}/>
             <Chat_input get_messages={props.get_messages}/>
         </div>

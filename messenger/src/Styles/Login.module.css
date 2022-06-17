@@ -1,4 +1,5 @@
 .login{
+    
     color: black;
     display: inline-block;
     align-items: center;
@@ -44,10 +45,13 @@
     border-radius: 7px;
     display: inline;
 }
-.Google :hover {
+.Google :active {
     box-shadow: 10px ,10px, 10px, rgb(29, 28, 132);
 }
 
 .google_login{
     align-items: center;
+}
+.login button :hover {
+    background-color: rgb(48, 66, 100);
 }

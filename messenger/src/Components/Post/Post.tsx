@@ -4,6 +4,7 @@ import { Global_state_type } from "../../Redux/Store";
 import {connect, useSelector} from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import {posts_actions} from "../../Redux/posts_reducer";
+import styles from "../../Styles/Profile.module.css";
 
 //                                        ...................TYPES FOR POST AND USER_POSTS COMPONENTS....................
 //Single coment type
@@ -71,13 +72,12 @@ export const Post : React.FC<SinglePostType> = (props)=>{
         props.set_showed_post(props.id)
     }
     return (
-        <div className="single_post" style={{   alignItems:"center",display: "inline-block" ,padding: "3px" ,}}>
+        <div className={styles.single_post} style={{   alignItems:"center",display: "inline" ,padding: "3px" ,}}>
             {!is_showing ?
                         <img src={props.post_img} alt="#" onClick={show_post}
                         style={{
-                            width: "220px",
-                            height: "220px",
-                            display: "inline",
+                            width: "293px",
+                            height: "293px",
                             cursor: "pointer"
                         }}></img> : <Navigate to="/post/" replace/>}
 
@@ -91,7 +91,7 @@ export const UserPosts :React.FC<UserPostsType> = (props) => {
         props.get_posts()
     },[]);
     return (
-        <div className="user_posts">
+        <div className={styles.User_posts}>
             {props.posts ? null : <h3 style={{fontWeight : 500}}>No posts yet ...</h3>}
             {props.posts?.map((el)=>{
                 return (

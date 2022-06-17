@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { Global_state_type } from "../../Redux/Store";
 import { PostsContainer } from "../Post/Post";
 import { Navigate } from "react-router-dom"
+import styles from "../../Styles/Profile.module.css"
 
 type MyProfilePropsType = {
     current_user_profile: Current_ProfileType
@@ -25,7 +26,7 @@ type InfoPropsType = {
 const Status: React.FC<StatusProps> = (props) => {
     let [is_status_edit, set_statis_edit] = useState(false);
     return (
-        <div>
+        <div className={styles.Status}>
             <span>status</span>
         </div>
     )
@@ -34,20 +35,20 @@ const Status: React.FC<StatusProps> = (props) => {
 const Information: React.FC<InfoPropsType> = (props) => {
     let [is_edit_on, set_edit] = useState(false);
     return (
-        <div className="infirmation_user">
+        <div className={styles.about_user}>
             <h2>{props.name}</h2>
+            <button type="button" className={styles.send_message}>Send message</button>
+            <button type="button" className={styles.follow}>Follow</button>
+            <button type="button" className={styles.properties}>...</button>
+            <br />
+            <span>status : </span>
+            <br />
             <span>{props.age + "   "} yo</span>
+            <br />
             <span>{" " + props.number_of_folowers + "  "}followers</span>
+            <br />
             <span>{" " + props.number_of_subscribers + "   "} subscribers</span>
         </div>
-    )
-}
-const My_posts: React.FC = (props: any) => {
-    return (
-        <div className="my_posts">
-            <hr></hr>
-        </div>
-
     )
 }
 
@@ -67,16 +68,14 @@ export const My_profile: React.FC<MyProfilePropsType> = (props) => {
     }
 
     return (
-        <div className="my_profile">
+        <div >
             {!is_new_post ?
-                <div>
-                    <section className="avatar">
+                <div className={styles.my_profile}>
+                    <section className={styles.avatar}>
                         <img src={avatar === null || undefined ? default_avatar : avatar} alt="#" onClick={set_avatar}></img>
+                        <button type="button" onClick={add_new_post}>+</button>
                     </section>
-                    <button type="button" onClick={add_new_post}>+</button>
-                    <Status />
                     <Information age={20} name={props.current_user_profile.user_name} number_of_folowers={167} number_of_subscribers={560} />
-
                     <PostsContainer />
                 </div> : <Navigate to="/new_post" replace></Navigate>}
 
