@@ -24,10 +24,13 @@ export const writeUserData = async function () {
 //APPLICATION FIRESTORE INSTANSE
 const reference = ref(dataBase)
 export const Firestore_instance = {
-    Get_collection: onValue(reference, (_snap) => {
-        const data = _snap.val()
-        return data
-    }),
+    Get_collection: async()=>{
+        let data;
+        onValue(reference, (_snap) => {
+            const data = _snap.val()
+            return data
+        })
+    },
     Get_collection_once: async () => {
         const q = query(collection(Firestore, "chat_firestore"));
         const query_snapshot = await getDocs(q).then((data) => data)
@@ -56,6 +59,15 @@ export const Firestore_instance = {
             userName : "Pavel Pavlov",
             user_id : "none"
 
+        })
+    },
+    send_message : async (_text:string | undefined,user_id:string | undefined | null,_sender:string | undefined|null) => {
+        const q = query(collection(Firestore,"chat_firestore"));
+        const docRef = await addDoc(collection(Firestore,"chat_firestore"),{
+            message_text : _text,
+            user_id : user_id,
+            created_at : new Date().getUTCDate(),
+            sender : _sender
         })
     }
 }

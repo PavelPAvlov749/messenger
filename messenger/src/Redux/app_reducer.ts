@@ -1,5 +1,8 @@
 import { InferActionType } from "./Store";
 import { CheckAuthState, Thunk_type } from "./auth_reducer";
+import { Firebase_instance } from "../DAL/Firebase_config";
+import { profile_actions } from "./profile_reducer";
+import { Current_ProfileType } from "./profile_reducer";
 
 const SET_INITIALIZE = "SET_INITIALIZE";
 
@@ -14,7 +17,7 @@ export const app_reducer = (state = initial_state,action:Action_Type) => {
         case SET_INITIALIZE : {
             return {
                 ...state,
-                is_initialize : false
+                is_initialize : true
             }
         }
         default : 
@@ -31,7 +34,36 @@ export const app_actions = {
     } as const )
 }
 
-export const initialize = () =>  (dispatch:any) => {
-    dispatch(app_actions.init())
+export const initialize = () =>  async (dispatch:any) => {
+    try{
+        Firebase_instance.get_current_user().then((result) => {
+        if(result){
+            let user: Current_ProfileType = {
+                user_name: result?.displayName,
+                email: result?.email,
+                id: result?.uid,
+                avatar: result?.photoURL,
+                followers: null,
+                subscribers: null,
+                messages: null,
+                isAnonymoys: result?.isAnonymous,
+                is_online: true,
+                current_user_posts: null,
+                current_user_status: null,
+                phone: result?.phoneNumber,
+            };
+            dispatch(profile_actions.set_current_user_profile(user));
+        }else{
+            throw new Error("Cannot initialize");
+            
+        }
+        }).then(() => {
+            dispatch(app_actions.init())
+        })
+    }catch(ex){
+        console.log(ex)
+    }
+
+    
     
 }

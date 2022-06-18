@@ -14,6 +14,7 @@ export type Message_type = {
     message_text?: string,
     sender?: string,
     user_id?: string,
+    current_user_id? : string | null | undefined,
 }
 
 let initial_state = {
@@ -51,6 +52,14 @@ export const chat_actions = {
 
 export const Get_messages_thunk_2 = ():Thunk_type => {
     return async function (dispatch) {
-        let messages = await Firestore_instance.Get_collection()
+        let messages = await Firestore_instance.Get_collection_once().then((res) => {
+            dispatch(chat_actions.get_messages(res))
+        })
+        
+    }
+}
+export const Send_message_thunk = (_Text:string | undefined,user_id:string | undefined | null,Sender:string | undefined|null):Thunk_type => {
+    return async () => {
+        Firestore_instance.send_message(_Text,user_id,Sender)
     }
 }

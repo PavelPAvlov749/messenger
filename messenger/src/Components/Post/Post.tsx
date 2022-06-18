@@ -48,9 +48,23 @@ type ShowedPostType = {
 export const SinglePost : React.FC = () => {
     const single_post :PostType= useSelector((state:Global_state_type) => {
         return state.posts.showed_post[0]
+    });
+    const avatar = useSelector((state:Global_state_type) => {
+        return state.profile.profile.avatar
+    })
+    const user_name = useSelector((state:Global_state_type) => {
+        return state.profile.profile.user_name
     })
     return (
-        <div className="post">
+        <div className="post" style={{"width" : "900px","marginLeft" : "20%",}}>
+            <div className={styles.user_info} style={{"paddingRight" : "70%"}}>
+            
+            <img src={avatar ? avatar : "#"} alt="" style={{"borderRadius" : "90px","display" : "inline","width" : "40px","height" : "40px"}} />
+            <span style={{"fontWeight" : "300","fontSize" : "x-large","display" : "inline",}}>{user_name}</span>
+            </div>
+            <br />
+            <hr />
+            <br />
             <img src={single_post.post_img} style={{
                 width: "500px",
                 height: "500px"

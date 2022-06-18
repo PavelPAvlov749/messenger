@@ -3,7 +3,7 @@
     margin-left: 20%;
     display: grid;
     grid-template-columns: 250px 550px;
-    grid-template-rows:  200px 400px;
+    grid-template-rows:  400px 400px;
     grid-template-areas: 
     "UL M"
     "UL I"
@@ -11,7 +11,7 @@
 }
 .messages{
     margin-left: 3px;
-
+    overflow-y: scroll;
     grid-area: "M";
     background-color: rgb(214, 218, 218);
     width: 547px;
@@ -21,7 +21,6 @@
 .userlist{
     border-radius: 5px;
     grid-area: "UL";
-    height: 300px;
     background-color: rgb(214, 218, 218);
 }
 .message_input{
@@ -30,12 +29,24 @@
     grid-area: I;
 
 }
+
 .textarea{
+    font-size: large;
     margin-top: 3px;
     border-radius: 5px;
     border-style: none;
     width: 540px;
     height: 90px;
     grid-area: "I";
-    background-color: rgb(116, 118, 117);
+    background-color: rgb(214, 218, 218);
+}
+.current_user_message{
+    position: relative;
+    text-align: right;
+}
+.another_user_message {
+    margin-left: 1vh;
+    margin-bottom: 1vh;
+    position: relative;
+    text-align: left;
 }

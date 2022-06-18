@@ -86,24 +86,24 @@ export const Navbar: React.FC<PropsType> = React.memo((props) => {
                 <li>
                     <NavLink to="/news">
                         <img src={home} alt="" style={{
-                            "width": "25px",
-                            "height": "25px",
+                            "width": "22px",
+                            "height": "22px",
                             "marginLeft" : "10px"
                         }} />
                     </NavLink>
                 </li>
                 <li>
                     <img src={upload} alt="" style={{
-                        "width": "25px",
-                        "height": "25px",
+                        "width": "22px",
+                        "height": "22px",
                         "marginLeft" : "10px"
                     }} onClick={navihate_to_upload}/>
                 </li>
                 <li>
 
                     {is_auth ? <img src={logout_img} alt="" onClick={logout} style={{
-                        "width": "25px",
-                        "height": "25px",
+                        "width": "22px",
+                        "height": "22px",
                         "marginLeft" : "10px"
                     }} /> : null}
                 </li>

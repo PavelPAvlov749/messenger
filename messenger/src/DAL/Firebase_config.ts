@@ -42,6 +42,7 @@ export const firebase = initializeApp(firebaseConfig);
 
 //Initialize Real-time data base instance 
 const dataBase = getDatabase(firebase);
+const firestore = getFirestore(firebase)
 
 //Firebase auth instance
 //Firebase instance gigiving the acsess to all user auth pearametrs and functions and configs
