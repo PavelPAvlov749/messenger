@@ -48,9 +48,12 @@ const Mesage : React.FC<Message_type> = (props) => {
     
     return (
         <div className={props.user_id === props.current_user_id ? styles.current_user_message : styles.another_user_message}  >
-            <b>
-                {props.sender}
-            </b>
+            <span style={{
+                "fontWeight" : "400",
+                "fontSize" : "17px",
+            }}>
+                {props.sender + " :"}
+            </span>
             
             <span>{}</span>
             <br />

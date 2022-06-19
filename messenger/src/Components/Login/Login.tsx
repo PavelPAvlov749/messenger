@@ -2,10 +2,13 @@ import React, { Dispatch } from "react";
 import { Formik, Field, Form } from "formik";
 import {Sign_in_with_pop_up} from "../../Redux/auth_reducer";
 import { Global_state_type } from "../../Redux/Store";
-import {connect} from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import {Navigate} from "react-router-dom";
 import styles from '../../Styles/Login.module.css';
-import goole_pic from "../../Media/google_button.png"
+import goole_pic from "../../Media/google_button.png";
+import {create_user_thunk} from "../../Redux/auth_reducer";
+import { initialize } from '../../Redux/app_reducer';
+
 type Form_type = {
     login: string,
     password: string
@@ -17,13 +20,14 @@ type PropsType = {
 }
 
 export const Login: React.FC<PropsType> = React.memo((props) => {
-
+    let dispatch :any = useDispatch();
     let login = "";
     let password = "";
     const set_submit = (values: Form_type,) => {
         login = values.login;
         password = values.password;
-        props.sign_in();
+        dispatch(create_user_thunk(login,password))
+    
 
     }
     const sign_in_with_google = ()=>{
@@ -39,13 +43,19 @@ export const Login: React.FC<PropsType> = React.memo((props) => {
                     className="login_forms"
                     initialValues={{ login: login, password: password }} onSubmit={set_submit}>
                     <Form className={styles.form}>
-                        <Field type="text" name="login"></Field>
+                        <Field type="text" name="login" style={{
+                            "borderRadius" : "3px",
+                            "borderWidth" : "1px",
+                        }}></Field>
                         <br />
-                        <Field type="text" name="password"></Field>
+                        <Field type="text" name="password" style={{
+                            "borderRadius" : "3px",
+                            "borderWidth" : "1px"
+                        }}></Field>
                         <br />
                         <hr>
                         </hr>
-                        <button type="submit">Login</button>
+                        <button type="submit" className={styles.submit_button}>Login</button>
                     </Form>
                     
                 </Formik>

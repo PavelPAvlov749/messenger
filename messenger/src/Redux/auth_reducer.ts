@@ -11,7 +11,7 @@ import { Firebase_auth } from "../DAL/Firebase_config";
 import { signOut } from "firebase/auth";
 import { app_actions } from "./app_reducer";
 import { initialize } from "./app_reducer";
-
+import { Firebas_auth } from "../DAL/Firebase_auth";
 
 
 
@@ -27,20 +27,29 @@ const SET_AUTH_TRUE = "messenger/auth_reducer/set_true";
 const SET_AUTH_FALSE = "messenger/auth_reducer/set_false";
 const SET_TOKEN = "messenger/auth_reducer/set_token";
 const IS_INITIALIZE = "messenger/auth_reducer/initialize";
+const CREATE_USER = "messenger/auth_reducer/create_user";
 
 let initial_state: initial_state_type = {
     is_auth: false,
     auth_token: "",
-    is_initialize : false
+    is_initialize : false,
+    user_id : undefined 
 }
 type initial_state_type = {
     is_auth: boolean,
     auth_token?: string | undefined,
-    is_initialize : boolean
+    is_initialize : boolean,
+    user_id? : string | undefined
 }
 
 export const auth_reducer = (state = initial_state, action: Action_Type) => {
     switch (action.type) {
+        case CREATE_USER : {
+            return {
+                ...state,
+                user_id : action.payload
+            }
+        }
         case IS_INITIALIZE : {
             return {
                 ...state,
@@ -85,7 +94,11 @@ export const auth_actions = {
     } as const),
     initialize : () => ({
         type : "messenger/auth_reducer/initialize"
-    }as const)
+    }as const),
+    create_user : (_user_id:string) => ({
+        type : "messenger/auth_reducer/create_user",
+        payload : _user_id
+    } as const)
 }
 
 //Thunk creators to log in
@@ -140,6 +153,22 @@ export const CheckAuthState = ():Thunk_type => {
                 dispatch(auth_actions.set_auth_token(""));
                 dispatch(auth_actions.initialize())
             }
+        })
+    }
+}
+//Creating new user thunk get the email and password from the form in login component
+//Then uses Firbase auth insatnce
+export const create_user_thunk = (_email:string,_password : string) : Thunk_type => {
+    return async (dispatch) =>{
+        Firebas_auth.create_user_with_email_and_password(_email,_password).then((res) => {
+            //if new user was created dispatch new user id in store otherwise throw error
+            if(res){
+                dispatch(auth_actions.create_user(res?.uid))
+                
+            }else{
+                console.log("Error")
+            }
+            
         })
     }
 }

@@ -5,7 +5,8 @@ import { connect } from "react-redux";
 import { Global_state_type } from "../../Redux/Store";
 import { PostsContainer } from "../Post/Post";
 import { Navigate } from "react-router-dom"
-import styles from "../../Styles/Profile.module.css"
+import styles from "../../Styles/Profile.module.css";
+
 
 type MyProfilePropsType = {
     current_user_profile: Current_ProfileType
@@ -53,6 +54,7 @@ const Information: React.FC<InfoPropsType> = (props) => {
 }
 
 export const My_profile: React.FC<MyProfilePropsType> = (props) => {
+
     useEffect(() => {
         props.get_current_user();
     }, [])
