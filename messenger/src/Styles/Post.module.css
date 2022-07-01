@@ -1,0 +1,84 @@
+.post_container {
+    margin-left: 20%;
+    width: 900px;
+    display: grid;
+    text-align: left;
+    grid-template-columns: 600px auto;
+    grid-template-rows: 70px ;
+    grid-template-areas:
+    "U U"
+    "I C"
+    "P C";
+}
+.user_info {
+    grid-area: U;
+    display: grid;
+    grid-template-columns: 80px auto;
+    grid-template-columns: 70px auto;
+    grid-template-areas: 
+    "MA N";
+
+}
+.span_name {
+    position: absolute;
+    font-size: large;
+    font-weight: 400;
+    grid-area: N;
+    display: inline;
+    margin-left: 10vh;
+}
+.user_img{
+    width: 50px;
+    height: 50px;
+    border-radius: 90px;
+    display: inline;
+    grid-area: MA;
+}
+.post_info {
+    grid-area: P;
+}
+.post_img {
+    grid-area: I;
+    width: 550px;
+    height: 550px;
+    object-fit: "cover"
+}
+.coment_text_area {
+    grid-area: T;
+}
+.coment_container{
+    display: grid;
+    grid-area: auto;
+    grid-template-rows: 40px 325px ;
+    grid-template-areas:
+    "H"
+    "S"
+    "C"
+    "T";
+}
+.h_coment {
+    grid-area: H;
+    display: inline;
+    margin-left: -1.5vh;
+    font-weight: 600;
+}
+.span_coment {
+    grid-area: S;
+}
+.coment_container textarea {
+    border: none;
+    border-radius: 5px;    
+    background-color: lightgrey;
+    height: 50px;
+    width: 300px;
+    grid-area: T;
+}
+.coment_container textarea:active{
+    border: none;
+}
+.single_coment_container{
+    grid-area: C;
+}
+.single_coment { 
+    display: inline-block;
+}

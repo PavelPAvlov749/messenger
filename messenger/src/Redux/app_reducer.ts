@@ -3,7 +3,10 @@ import { CheckAuthState, Thunk_type } from "./auth_reducer";
 import { Firebase_instance } from "../DAL/Firebase_config";
 import { profile_actions } from "./profile_reducer";
 import { Current_ProfileType } from "./profile_reducer";
-
+import { get_posts_thunk } from "./posts_reducer";
+import { GithubAuthProvider } from "firebase/auth";
+import { get_status_thunk } from "./profile_reducer";
+import { Get_current_user_thunk } from "./profile_reducer";
 const SET_INITIALIZE = "SET_INITIALIZE";
 
 let initial_state = {
@@ -36,7 +39,7 @@ export const app_actions = {
 
 export const initialize = () =>  async (dispatch:any) => {
     try{
-        Firebase_instance.get_current_user().then((result) => {
+        await Firebase_instance.get_current_user().then((result) => {
         if(result){
             let user: Current_ProfileType = {
                 user_name: result?.displayName,
@@ -53,9 +56,9 @@ export const initialize = () =>  async (dispatch:any) => {
                 phone: result?.phoneNumber,
             };
             dispatch(profile_actions.set_current_user_profile(user));
+            dispatch(get_status_thunk(user.id))
         }else{
             throw new Error("Cannot initialize");
-            
         }
         }).then(() => {
             dispatch(app_actions.init())
@@ -63,7 +66,4 @@ export const initialize = () =>  async (dispatch:any) => {
     }catch(ex){
         console.log(ex)
     }
-
-    
-    
 }

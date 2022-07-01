@@ -1,0 +1,18 @@
+.status_input input {
+    height: 22px;
+    font-size: medium;
+    width: 10vh;
+    border-width: 1px;
+    border-radius: 5px;
+    border-color: lightgrey;
+    border-style: groove;
+    margin-bottom: 0%;
+    padding-bottom: 0%;
+    display: inline;
+    -webkit-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    transition: all 0.4s;
+}
+.status_input input:focus {
+    width: 40vh;
+}

@@ -1,28 +1,51 @@
 .my_profile{
-    margin-left: 20%;
+    margin-left: 17%;
+    justify-content: center;
     max-width: 1000px;
     display: grid;
-    grid-template-columns: 300px auto;
+    grid-template-columns: 900px;
     grid-template-rows: 300px auto;
     grid-template-areas:
-    "A U";
+    "U U"
+    "P P"
+    ;
 
 }
+.info{
+    grid-area: I;
+}
+.hr{
+    height: 2px;
+    background-color: grey;
+    width: 100%;
+    grid-area: "HR";
+}
 .avatar{
-    grid-area: "A";
+    grid-area: A;
+    display: inline;
+    margin-top: 5vh;
+    width: 200px;
+    height: 200px;
 }
 .avatar img {
-    margin-left: 50px;
     width: 150px;
     height: 150px;
     border-radius: 90px;
 }
 .about_user{
-    grid-area: "U";
+    margin-bottom: 0px;
+    padding-bottom: 0%;
+    grid-area: U;
+    display: grid;
     text-align: left;
+    grid-template-columns: 200px 700px;
+    grid-template-areas:
+    "A I";
     
 }
 .about_user button {
+    margin-left: 7vh;
+    display: inline;
     height: 30px;
     border-width: 1px;
     border-style: solid;
@@ -46,7 +69,9 @@
 .User_posts {
     display: grid;
     grid-template-columns: 300px 300px 300px;
+    grid-area: P;
 }
-.single_post {
+.about_user .properties {
+    width: 40px;
 
 }

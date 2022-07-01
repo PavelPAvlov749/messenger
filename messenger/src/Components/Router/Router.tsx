@@ -1,4 +1,5 @@
 //REACT IMPORTS
+import e from "express";
 import React from "react";
 import { BrowserRouter,Navigate,Route,Routes } from "react-router-dom";
 //IMPORTING COMPONETNS
@@ -6,7 +7,8 @@ import { Chat_container } from "../Chat/Chat";
 import { Login_container } from "../Login/Login";
 import { My_profile_container } from "../My_profile/My_profile";
 import { New_post_page } from "../Post/New_post";
-import { SinglePost } from "../Post/Post";
+import { SinglePost } from "../Post/Show_post";
+import { Show_post_container } from "../Post/Show_post";
 
 //PATH ROUTES CONSTANTS 
 const LOGIN = "/login"
@@ -47,7 +49,7 @@ const PUBLICK_ROUTES : Array<RouteType>= [
 const PRIVATE_ROUTES = [
     {
         path: POST,
-        element : <SinglePost/>
+        element : <Show_post_container/>
     },
     {
         path: NEW_POST,
@@ -86,7 +88,7 @@ export const Router : React.FC<RouterProps> = (props) => {
             <Routes>
                 {PRIVATE_ROUTES.map((el) => {
                     return (
-                        <Route path={el.path} element={el.element}/>
+                        <Route path={el.path} element={el.element} key={el.paht}/>
                     )
                 })}
             </Routes>
@@ -96,7 +98,7 @@ export const Router : React.FC<RouterProps> = (props) => {
             <Routes>
                 {PUBLICK_ROUTES.map((el)=> {
                     return (
-                        <Route path={el.path} element={el.element}/>
+                        <Route path={el.path} element={el.element} key={el.path}/>
                     )
                 })}
             </Routes>

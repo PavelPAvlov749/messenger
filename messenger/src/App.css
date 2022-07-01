@@ -1,6 +1,8 @@
 .App {
   color: black;
   text-align: center; 
+  justify-content: center;
+  align-items: center;
   padding: 0px;
   margin: 0px;
 }

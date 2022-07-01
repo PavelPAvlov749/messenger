@@ -2,7 +2,11 @@ import React from "react";
 import { Field, Form, Formik } from "formik";
 import {Firestore_instance} from "../../DAL/Firestore_config";
 import { Firebase_instance } from "../../DAL/Firebase_config";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation,useNavigate } from "react-router-dom";
+import {Db_instance} from "../../DAL/Firebase_config";
+import { useSelector } from "react-redux";
+import { Global_state_type } from "../../Redux/Store";
+import styles from "../../Styles/new_post.module.css";
 
 
 type PostFormType = {
@@ -13,21 +17,30 @@ type PostFormType = {
 
 
 export const New_post_page : React.FC = () => {
+    const creator = useSelector((state:Global_state_type) => {
+        return state.profile.profile.user_name;
+    });
+    const user_id = useSelector((state:Global_state_type) => {
+        return state.profile.profile.id
+    });
+    const location = useNavigate();
     let new_post_text = "";
     let new_post_img = "";
-    let new_post_tag = ""
+    let new_post_tag = "";
+    let new_post_photo : any;
     const set_submit = (values : PostFormType) => {
-        Firestore_instance.add_post(values.post_text,values.post_img);
-        
+        Db_instance.add_posts(values.post_text,values.post_img,creator,user_id);
+        location("/me")
+    }
+    const photoOnLoad = (e:any) => {
+        new_post_photo = e.target.files[0];
+        console.log(new_post_photo)
     }
      return (
-        <div className="New_post_page"
-        style={{alignItems: "center"}}>
-        <h1 style={{
-            marginRight: "50%",
-            fontWeight: 400}}>New Post :</h1>
+        <div className={styles.new_post_wrapper}
+        >
         <Formik
-        className ="New_post_form"
+        className ={styles.formik_fields}
         enableReinitialize = {true}
         initialValues={{
             post_text : new_post_text,
@@ -37,14 +50,20 @@ export const New_post_page : React.FC = () => {
             <Form style={{
                 fontWeight : 300
             }}>
-                <h3>Type text of your post</h3>
+                <h2>Add new posts ...</h2>
+                <hr />
+                <h3>Type text of your post : </h3>
                 <Field type="text" name="post_text"></Field>
-                <h3>Load the photo</h3>
+                <br/>
+                <h3>Load the photo : </h3>
                 <Field type="text" name="post_img"></Field>
-                <h3>Add tag to your post</h3>
+                <br/>
+                <h3>Add tag to your post : </h3>
                 <Field type="text" name="post_tag"></Field>
-                <br>
-                </br>
+                <br/>
+                {/* <h3>Or upload the file</h3> */}
+                {/* <input type="file" placeholder="load the file" title=" " onClick={photoOnLoad}></input> */}
+                <hr />
                 <button type="submit">Create</button>
             </Form>
         </Formik>

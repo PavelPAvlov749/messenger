@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink,Navigate } from "react-router-dom";
+import { Link, NavLink,Navigate ,useNavigate, useLocation} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Global_state_type } from "../../Redux/Store";
 import { Firebase_instance } from "../../DAL/Firebase_config";
@@ -19,12 +19,9 @@ type PropsType = {
 }
 
 export const Navbar: React.FC<PropsType> = React.memo((props) => {
-
+    const location = useNavigate();
     const navihate_to_upload = () =>{
-
-        return (
-            <Navigate to="/new_post" replace></Navigate>
-        )
+        location("new_post")
     }
     let is_auth = useSelector((state: Global_state_type) => {
         return state.auth.is_auth
@@ -42,17 +39,7 @@ export const Navbar: React.FC<PropsType> = React.memo((props) => {
                 "left" : "20%",
                 "position" : "absolute"
             }}/>
-            <input placeholder="Search" style={{
-                "marginTop" : "15px",
-                "marginBottom" : "10px",
-                "borderRadius": "5px",
-                "display": "inline-block",
-                "backgroundColor": "rgb(192, 201, 201)",
-                "borderStyle": "none",
-                "marginLeft" : "0%",
-                "height": "30px",
-                "width": "200px",
-            }}></input>
+            <input placeholder=" Search" className={style.navbar_input}></input>
             <ul style={{
                 "height": "25px",
 

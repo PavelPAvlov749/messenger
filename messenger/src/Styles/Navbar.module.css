@@ -20,3 +20,26 @@
 .navbar button {
     display: inline-block;
 }
+.navbar_input{
+
+    margin-top : 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    background-color: rgb(192, 201, 201);
+    border-style: none;
+    margin-left : -10vh;
+    border-width: 1px;
+    height: 30px;
+    width: 100px;
+    -webkit-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    transition: all 0.4s;
+}
+.navbar_input:focus{
+    border: none;
+    border-width: 1px;
+    width: 200px;
+    font-size: medium;
+    color: rgb(74, 73, 73);
+}

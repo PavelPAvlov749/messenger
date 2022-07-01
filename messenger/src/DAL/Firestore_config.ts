@@ -52,7 +52,7 @@ export const Firestore_instance = {
     },
     add_post: async (text: string, img: string) => {
         const q = query(collection(Firestore, "posts"));
-        const docRef = await addDoc(collection(Firestore, "posts"), {
+        await addDoc(collection(Firestore, "posts"), {
             post_img : img,
             post_likes_count : 0,
             post_text : text,

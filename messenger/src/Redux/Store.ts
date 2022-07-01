@@ -26,7 +26,7 @@ type Root_reducer_type = typeof reducers;
 //Recieving a state type from ReturnType from Root_reducer
 export type Global_state_type = ReturnType<Root_reducer_type>;
 
-
+const composeEnhancers = compose;
 export const store = createStore(reducers,applyMiddleware(thunk));
 
 

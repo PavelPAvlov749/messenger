@@ -1,135 +1,91 @@
 import React, { MouseEventHandler, useEffect, useState } from "react";
 import { get_posts_thunk } from "../../Redux/posts_reducer";
 import { Global_state_type } from "../../Redux/Store";
-import {connect, useSelector} from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
-import {posts_actions} from "../../Redux/posts_reducer";
+import { connect, useSelector } from "react-redux";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
+import { posts_actions } from "../../Redux/posts_reducer";
 import styles from "../../Styles/Profile.module.css";
+import style from "../../Styles/Post.module.css";
+import { Db_instance } from "../../DAL/Firebase_config";
+import { get_posts_thunk_2 } from "../../Redux/posts_reducer";
+import { SinglePostType } from "./Posts_types";
+import { UserPostsType } from "./Posts_types";
 
-//                                        ...................TYPES FOR POST AND USER_POSTS COMPONENTS....................
-//Single coment type
-type ComentType = {
-    coment : string,
-    coment_likes : number,
-    coment_owner_name : string,
-    date : number
-}
-//Type for single post component
-export type PostType = {
-    comments? : Array<ComentType> ,
-    likes? : number,
-    post_img : string,
-    post_text : string,
-    id: string
-}
-type SinglePostType = {
-    comments? : Array<ComentType> ,
-    likes? : number,
-    post_img : string,
-    post_text : string,
-    id: string,
-    set_showed_post : (post_id : string) => void
-}
-//All posts type
-type UserPostsType = {
-    posts? : Array<PostType> | null,
-    get_posts : () => void,
-    set_showed_post : (_post_id : string) => void,
-}
-type Show_post_type = {
-    user_name? : string,
-    user_avatar? : string,
-    post? : PostType
-}
-type ShowedPostType = {
-    post : PostType
-}
+
 //                                                  .....................REACT COMPONENTS........................
-export const SinglePost : React.FC = () => {
-    const single_post :PostType= useSelector((state:Global_state_type) => {
-        return state.posts.showed_post[0]
-    });
-    const avatar = useSelector((state:Global_state_type) => {
-        return state.profile.profile.avatar
-    })
-    const user_name = useSelector((state:Global_state_type) => {
-        return state.profile.profile.user_name
-    })
-    return (
-        <div className="post" style={{"width" : "900px","marginLeft" : "20%",}}>
-            <div className={styles.user_info} style={{"paddingRight" : "70%"}}>
-            
-            <img src={avatar ? avatar : "#"} alt="" style={{"borderRadius" : "90px","display" : "inline","width" : "40px","height" : "40px"}} />
-            <span style={{"fontWeight" : "300","fontSize" : "x-large","display" : "inline",}}>{user_name}</span>
-            </div>
-            <br />
-            <hr />
-            <br />
-            <img src={single_post.post_img} style={{
-                width: "500px",
-                height: "500px"
-            }} alt="#"></img>
-            <br />
-            <span>{single_post.post_text}</span>
-            <br />
-            <span>{single_post.likes + " " + "likes"}</span>
-        </div>
-    )
-}
+
 
 //Single post prewiew compoent 
-export const Post : React.FC<SinglePostType> = (props)=>{
+//Used in profile component to show all users posts preview
+export const Post: React.FC<SinglePostType> = (props) => {
+
+    const [is_showing, set_is_showing] = useState(false);
+
+    //On post click handler function    
+    //if user ckiced on post redirrect to show_post component
     const history = useNavigate();
-    const [is_showing,set_is_showing] = useState(false);
     const show_post = () => {
         history(`/post/id=${props.id}`);
         props.set_showed_post(props.id)
     }
     return (
-        <div className={styles.single_post} style={{   alignItems:"center",display: "inline" ,padding: "3px" ,}}>
+        <div className={styles.single_post} style={{ alignItems: "center", display: "inline", padding: "3px", }}>
             {!is_showing ?
-                        <img src={props.post_img} alt="#" onClick={show_post}
-                        style={{
-                            width: "293px",
-                            height: "293px",
-                            cursor: "pointer"
-                        }}></img> : <Navigate to="/post/" replace/>}
+                <img src={props.post_img} alt="#" onClick={show_post}
+                    style={{
+                        width: "293px",
+                        height: "293px",
+                        cursor: "pointer",
+                        objectFit: "cover"
+                    }}></img> : <Navigate to="/post/" replace />}
 
         </div>
     )
 }
 
-export const UserPosts :React.FC<UserPostsType> = (props) => {
-
-    useEffect(()=>{
-        props.get_posts()
-    },[]);
+//Container component for all single post preview components
+export const UserPosts: React.FC<UserPostsType> = (props) => {
+    //User_id getter
+    const user_id = useSelector((state: Global_state_type) => {
+        return state.profile.profile.id
+    })
+    //Get posts function
+    useEffect(() => {
+        if (props.posts?.length === 0) {
+            props.get_posts_2(user_id)
+        }
+    }, [props.posts])
     return (
         <div className={styles.User_posts}>
-            {props.posts ? null : <h3 style={{fontWeight : 500}}>No posts yet ...</h3>}
-            {props.posts?.map((el)=>{
+            {props.posts ? null : <h3 style={{ fontWeight: 500 }}>No posts yet ...</h3>}
+            {props.posts?.map((el) => {
                 return (
-                    <Post set_showed_post={props.set_showed_post} id={el.id} post_img={el.post_img} comments={el.comments} likes={el.likes} post_text={el.post_text}/>
+                    <Post set_showed_post={props.set_showed_post} id={el.id} key={el.id} post_img={el.post_img} comments={el.coments} likes={el.likes} post_text={el.post_text} />
                 )
             })}
         </div>
     )
 }
-const MapStateToProps = (state:Global_state_type) => {
+
+
+const MapStateToProps = (state: Global_state_type) => {
     return {
-        posts : state.posts.posts,
-        showed_post : state.posts.showed_post
+        posts: state.posts.posts,
+        showed_post: state.posts.showed_post,
     }
 }
-const MapDispatchToProps = (dispatch:any) => {
+const MapDispatchToProps = (dispatch: any) => {
     return {
-        get_posts : () => {
+        get_posts: () => {
             dispatch(get_posts_thunk())
         },
-        set_showed_post : (post_id : string) => {
+        get_posts_2: (user_id: string | null | undefined) => {
+            dispatch(get_posts_thunk_2(user_id))
+        },
+        set_showed_post: (post_id: string) => {
             dispatch(posts_actions.set_showed_post(post_id))
         }
     }
 }
 
-export const PostsContainer = connect(MapStateToProps,MapDispatchToProps)(UserPosts);
+export const PostsContainer = connect(MapStateToProps, MapDispatchToProps)(UserPosts);
