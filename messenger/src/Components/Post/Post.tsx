@@ -43,6 +43,7 @@ export const Post: React.FC<SinglePostType> = (props) => {
     )
 }
 
+
 //Container component for all single post preview components
 export const UserPosts: React.FC<UserPostsType> = (props) => {
     //User_id getter

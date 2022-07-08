@@ -7,6 +7,7 @@ import styles from "../../Styles/Profile.module.css";
 import { UserStatus } from "../../Components/Status/Status";
 import { get_status_thunk } from "../../Redux/profile_reducer";
 import { update_status_thunk } from "../../Redux/profile_reducer";
+import {get_images_URL,get_img_list} from "../../DAL/Cloud_storage";
 
 
 type MyProfilePropsType = {
@@ -43,6 +44,9 @@ const Information: React.FC<InfoPropsType> = (props) => {
     const avatar = useSelector((state: Global_state_type) => {
         return state.profile.profile.avatar
     })
+    const get_img = () => {
+        get_img_list()
+    }
     return (
         <div className={styles.about_user}>
             <section className={styles.avatar}>
@@ -53,7 +57,7 @@ const Information: React.FC<InfoPropsType> = (props) => {
 
                 <button type="button" className={styles.send_message}>Send message</button>
                 <button type="button" className={styles.follow}>Follow</button>
-                <button type="button" className={styles.properties}>...</button>
+                <button type="button" className={styles.properties} onClick={get_img}>...</button>
                 <br />
                 <UserStatus user_id={props.user_id}status={status} get_status={props.get_status} set_new_status={props.update_status} />
                 <br />

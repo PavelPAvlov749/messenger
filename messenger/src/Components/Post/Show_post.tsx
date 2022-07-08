@@ -9,8 +9,7 @@ import styles from "../../Styles/Post.module.css";
 import { ComentType } from "./Posts_types";
 import { Db_instance } from "../../DAL/Firebase_config";
 import { connect } from "react-redux";
-import finalPropsSelectorFactory from "react-redux/es/connect/selectorFactory";
-import { contains } from "@firebase/util";
+
 
 //Coments coponent 
 type Single_coment_type = {
@@ -42,7 +41,7 @@ const Coments: React.FC<ComentsType> = (props) => {
     return (
         <div className={style.coment_container}>
             <h3 className={style.h_coment}>Coments : </h3>
-            {props.coments.length < 1 ? <span>No coments yet ...</span> : <div>{
+            {props.coments[0] === undefined ? <span>No coments yet ...</span> : <div>{
                 props.coments.map((el) => {
                     return (
 
@@ -88,6 +87,7 @@ export const SinglePost: React.FC<Showed_posts_props> = (props) => {
             </div>
             <Coments coments={props.showed_post[0].coments} curent_post_id={props.showed_post[0].id} />
             <img src={props.showed_post[0].post_img} alt="#" className={style.post_img}></img>
+
 
         </div>
     )

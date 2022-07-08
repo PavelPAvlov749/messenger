@@ -38,10 +38,15 @@
     grid-area: P;
 }
 .post_img {
+    position: relative;
     grid-area: I;
     width: 550px;
-    height: 550px;
-    object-fit: "cover"
+    max-height: 550px;
+    object-fit: contain;
+}
+
+.post_img:hover{
+    box-shadow: 0,0,10px 10px rgb(55, 122, 155);
 }
 .coment_text_area {
     grid-area: T;

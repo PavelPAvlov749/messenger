@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink,Navigate ,useNavigate, useLocation} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Global_state_type } from "../../Redux/Store";
@@ -14,10 +14,18 @@ import upload from "../../Media/Upload.png";
 import logout_img from "../../Media/Logout.png";
 import logo from '../../Media/Logo.jpg'
 
+
+
 type PropsType = {
     log_out: () => void
 }
+const userList : React.FC = (props) => {
+    return (
+        <div>
 
+        </div>
+    )
+}
 export const Navbar: React.FC<PropsType> = React.memo((props) => {
     const location = useNavigate();
     const navihate_to_upload = () =>{
@@ -29,17 +37,19 @@ export const Navbar: React.FC<PropsType> = React.memo((props) => {
     const logout = () => {
         props.log_out()
     }
-
+    const [onSearch,setOnSearch] = useState(false);
     return (
         <div className={style.navbar}>
             <img src={logo} alt="" style={{
                 "height" : "40px",
                 "marginTop" : "10px",
                 "display" : "inline",
-                "left" : "20%",
+                "left" : "23%",
                 "position" : "absolute"
             }}/>
-            <input placeholder=" Search" className={style.navbar_input}></input>
+            <input placeholder=" Search" className={style.navbar_input} onClick={() => {setOnSearch(true)}} onBlur={() => {setOnSearch(false)}}></input>
+                {onSearch ?  <div style={{"width" : "200px","height" : "400px","zIndex" : "12","position" : "absolute","backgroundColor" : "lightgrey",
+                "borderRadius" : "5px","marginLeft" : "84vh",}}></div>: null}
             <ul style={{
                 "height": "25px",
 
@@ -95,8 +105,7 @@ export const Navbar: React.FC<PropsType> = React.memo((props) => {
                     }} /> : null}
                 </li>
             </ul>
-            <hr />
-
+              <hr style={{"maxWidth" : "900px","marginLeft" : "-1vh"}}/>  
         </div>
     )
 });

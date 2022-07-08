@@ -1,11 +1,11 @@
 
-//...............................HERE IS THE FIREBASE IMPORTS>>>>>>>>>>>>>>
+//                               ...............................HERE IS THE FIREBASE IMPORTS>>>>>>>>>>>>>>
 import { initializeApp } from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
 //Firebase hooks 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollectionData } from "react-firebase-hooks/firestore"
+import { useCollectionData } from "react-firebase-hooks/firestore";
 import {
     getAuth,
     signOut,
@@ -18,9 +18,11 @@ import {
 } from "firebase/auth";
 import { auth_actions } from "../Redux/auth_reducer";
 import { collection, getDocs, getFirestore, query, snapshotEqual } from "firebase/firestore";
-import { getDatabase, set, onValue, ref, child ,get,push,update} from "firebase/database";
+import { getDatabase, set, onValue, ref, child, get, push, update } from "firebase/database";
 import { useDispatch } from "react-redux";
-
+import { makeid } from "./Randomizer";
+import { getDownloadURL, getStorage } from "firebase/storage";
+import { ref as storage_ref, uploadBytes, getBlob } from "firebase/storage"
 
 //                                                ::::::::::::::::::::::CONFIG THE FIREBASE::::::::::::::::::::::::::
 
@@ -84,96 +86,132 @@ export const Db_instance = {
         //First argument is the Firebase database instance
         //Second argument is the path to collection tah we need
         const post_ref = await ref(dataBase, "Posts/");
-        const posts = await onValue(post_ref,(snap) => {
+        const posts = await onValue(post_ref, (snap) => {
             const data = snap.val();
         })
 
         return posts;
     },
-    get_posts_2 : async (user_id:string | null | undefined) => {
+    get_posts_2: async (user_id: string | null | undefined) => {
         const Db_ref = ref(getDatabase());
-        const posts : Array<any> = [];
-        await get(child(Db_ref,"Users/" + user_id + "/posts/")).then((snap) =>{
+        const posts: Array<any> = [];
+        await get(child(Db_ref, "Users/" + user_id + "/posts/")).then((snap) => {
             snap.forEach((el) => {
                 posts.push({
-                    creator : el.val().creator,
-                    id : el.val().id,
-                    likes_count : el.val().likes_count,
-                    post_text : el.val().post_text,
-                    createdAt : el.val().createdAt,
-                    coments : Object.keys(el.val().coments).map((key) => el.val().coments[key]),
-                    post_img : el.val().post_img
+                    creator: el.val().creator,
+                    id: el.val().id,
+                    likes_count: el.val().likes_count,
+                    post_text: el.val().post_text,
+                    createdAt: el.val().createdAt,
+                    coments: Object.keys(el.val().coments).map((key) => el.val().coments[key]),
+                    post_img: el.val().post_img
                 });
                 posts.reverse()
             })
         })
         return posts
     },
-    add_posts : async (_text:string,_img:string,_creator :string | null | undefined,_user_id:string | null | undefined) => {
-        const Db_ref = getDatabase();
-        const new_post_key = push(child(ref(Db_ref),"Users" + _user_id + "/posts/")).key;
-        const post_data = {
-            post_text : _text,
-            post_img : _img,
-            creator : _creator,
-            likes_count : 0,
-            createdAt : new Date().getUTCDate(),
-            id : new_post_key,
-            coments : {
-                coment : ""
-            }
+    add_posts: async (_text: string, _img: Blob | Uint8Array | ArrayBuffer, _creator: string | null | undefined, _user_id: string | null | undefined) => {
+        //Get the refrence of database
+        const dbRef = getDatabase();
+        //Create random image name with makeid function (exposts from Randomizer.ts)
+        const image_name = makeid(12);
+        //Get the refrence of Firebase storage
+        const Storage = getStorage(firebase)
+        //Get the image refrence
+        const image_ref = storage_ref(Storage, image_name);
+        //If _img from arguments !== null dowload the file in storage with image_name
+        if (_img !== null) {
+            //Uploading the image
+            uploadBytes(image_ref, _img).then(() => {
+                //After upload get the dowload url of the image to put them in database
+                getDownloadURL(image_ref).then((_url) => {
+                    const new_post_key = push(child(ref(dbRef), "Users" + _user_id + "/posts/")).key;
+                    //Creating the post JSON object for database
+                    const postData = {
+                        post_text: _text,
+                        post_img: _url,
+                        creator: _creator,
+                        likes_count: 0,
+                        createdAt: new Date().getDate(),
+                        id: new_post_key,
+                        coments: {
+                            coment: ""
+                        }
+
+                    }
+                    const updates: any = {};
+                    updates[`Users/` + _user_id + "/posts/" + new_post_key] = postData;
+                    //Update Database with new element
+                    return update(ref(dbRef), updates);
+                })
+            })
         }
-        const updates : any = {};
-        updates[`Users/` + _user_id + "/posts/" + new_post_key] = post_data;
-        return update(ref(Db_ref),updates);
-        
     },
-    delete_post : async (_post_id :number) => {
+
+    delete_post: async (_post_id: number) => {
 
     },
-    edit_post : (post_id:string,_text:string,_img:string) => {
-        
+    edit_post: (post_id: string, _text: string, _img: string) => {
+
     },
-    get_status : async (_user_id : string | null | undefined) => {
+    get_status: async (_user_id: string | null | undefined) => {
         const Db_ref = ref(getDatabase());
-        let status = await get(child(Db_ref,"Users/" + _user_id + "/status/status/")).then((snap) => {
+        let status = await get(child(Db_ref, "Users/" + _user_id + "/status/status/")).then((snap) => {
             return snap.val()
         })
         return status
     },
-    update_status : async (_user_id :string,status:string) => {
-        const Db_ref = getDatabase();
-        const status_data = {
-            status : status
+    update_status: async (_user_id: string, status: string) => {
+        try {
+            if (status.length > 0) {
+                const Db_ref = getDatabase();
+                const status_data = {
+                    status: status
+                }
+                const updates: any = {};
+                updates["Users/" + _user_id + "/status/"] = status_data;
+                return update(ref(Db_ref), updates);
+            } else {
+                //if Status is empty string thorw an error
+                throw new Error("Error : Cannot update!Status is empty string!")
+            }
+        } catch (ex) {
+            //Log the error
+            console.log(ex);
         }
-        const updates : any = {};
-        updates["Users/" + _user_id + "/status/"] = status_data;
-        return update(ref(Db_ref),updates);
+
     },
-    add_coment : async (user_name:string | null | undefined,_coment_text:string,user_id:string,post_id:string) => {
-        const Db_ref = getDatabase();
-        const coment_data = {
-            coment_text : _coment_text,
-            coment_owner_name: user_name,
-            date : new Date().getUTCDate()
-        };
-        const makeid = (length:number) => {
-            var result           = '';
-            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            var charactersLength = characters.length;
-            for ( var i = 0; i < length; i++ ) {
-              result += characters.charAt(Math.floor(Math.random() *
-         charactersLength));
-           }
-           return result;
+    add_coment: async (user_name: string | null | undefined, _coment_text: string, user_id: string, post_id: string) => {
+        try {
+            if (_coment_text.length > 0) {
+                const Db_ref = getDatabase();
+                const coment_data = {
+                    coment_text: _coment_text,
+                    coment_owner_name: user_name,
+                    date: new Date().getUTCDate()
+                };
+
+                const coment_id = makeid(9);
+                const updates: any = {};
+                updates["Users/" + user_id + "/posts/" + post_id + "/coments/" + coment_id] = coment_data;
+                return update(ref(Db_ref), updates);
+            } else {
+                throw new Error("Error : Coment canot be an ampty string!")
+            }
+        } catch (ex) {
+            console.log(ex);
         }
-        const coment_id = makeid(9);
-        const updates : any = {};
-        updates["Users/" + user_id + "/posts/" + post_id + "/coments/" + coment_id] = coment_data;
-        return update(ref(Db_ref),updates); 
+    },
+    get_users: async () => {
+        const Db_ref = ref(getDatabase());
+        let users = await get(child(Db_ref, "Users/")).then((response) => {
+            console.log(response.val());
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 }
-Db_instance.get_posts();
 
 
 //Custom Firebsae instance object withc is contains all auth functions in the app

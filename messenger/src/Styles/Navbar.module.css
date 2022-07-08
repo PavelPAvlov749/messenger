@@ -12,7 +12,7 @@
     padding-right: 15px;
 }
 .navbar {
-    margin: 0;
+    margin-left: 23%;
     padding: 0;
     text-align: center;
     
@@ -28,7 +28,7 @@
     display: inline-block;
     background-color: rgb(192, 201, 201);
     border-style: none;
-    margin-left : -10vh;
+    margin-left : -30vh;
     border-width: 1px;
     height: 30px;
     width: 100px;
