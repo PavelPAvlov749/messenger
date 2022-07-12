@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link, NavLink,Navigate ,useNavigate, useLocation} from "react-router-dom";
+import { Link, NavLink, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Global_state_type } from "../../Redux/Store";
 import { Firebase_instance } from "../../DAL/Firebase_config";
 import { auth_actions, Log_out_thunk } from "../../Redux/auth_reducer";
 import { connect } from "react-redux";
+import { Db_instance } from "../../DAL/Firebase_config";
 //IMPORTING INTERFACE ICONS
 import style from "../../Styles/Navbar.module.css";
 import chat_img from "../../Media/Chat.png";
@@ -13,100 +14,108 @@ import home from "../../Media/Home.png"
 import upload from "../../Media/Upload.png";
 import logout_img from "../../Media/Logout.png";
 import logo from '../../Media/Logo.jpg'
+import { UsersType } from "../../Redux/profile_reducer";
 
 
 
 type PropsType = {
     log_out: () => void
 }
-const userList : React.FC = (props) => {
-    return (
-        <div>
+type userPageMiniPropsType = {
+    fullName : string,
+    status : string,
+    avatar : string,
+}
+type userListPropsType = {
+    users : Array<UsersType>
+}
+const userPageMini: React.FC<userPageMiniPropsType> = (props) => {
+    const default_avatar = "";
 
-        </div>
+    return (
+        <>
+            <NavLink to={"/"}>
+                <img src={props.avatar ? props.avatar : default_avatar} alt="#" />
+                <span>{props.fullName}</span>
+                <span>{props.status}</span>
+            </NavLink>
+
+        </>
+    )
+}
+const userList: React.FC<userListPropsType> = (props) => {
+    return (
+        <section className={style.user_list}>
+            {props.users.map((user) => {
+                return (
+                    <div>
+                    </div>
+                )
+            })}
+        </section>
     )
 }
 export const Navbar: React.FC<PropsType> = React.memo((props) => {
+    let [search_input,set_search_input] = useState(null)
     const location = useNavigate();
-    const navihate_to_upload = () =>{
+    const navihate_to_upload = () => {
         location("new_post")
     }
+    const [onSearch, setOnSearch] = useState(false);
     let is_auth = useSelector((state: Global_state_type) => {
         return state.auth.is_auth
     })
     const logout = () => {
         props.log_out()
     }
-    const [onSearch,setOnSearch] = useState(false);
+    
+    //Handler Functions
+    const onUsersSearch = (e:any) => {
+        set_search_input(e.currentTarget.value)
+        Db_instance.get_users(e.currentTarget.value);
+        console.log(search_input)
+    }
+    
     return (
-        <div className={style.navbar}>
-            <img src={logo} alt="" style={{
-                "height" : "40px",
-                "marginTop" : "10px",
-                "display" : "inline",
-                "left" : "23%",
-                "position" : "absolute"
-            }}/>
-            <input placeholder=" Search" className={style.navbar_input} onClick={() => {setOnSearch(true)}} onBlur={() => {setOnSearch(false)}}></input>
-                {onSearch ?  <div style={{"width" : "200px","height" : "400px","zIndex" : "12","position" : "absolute","backgroundColor" : "lightgrey",
-                "borderRadius" : "5px","marginLeft" : "84vh",}}></div>: null}
-            <ul style={{
-                "height": "25px",
+        <section className={style.navbar_container}>
+            <div className={style.navbar}>
+                <img src={logo} alt="" className={style.logo} />
+                <input placeholder=" Search" className={style.navbar_input} onClick={() => { setOnSearch(true) }} onBlur={() => { setOnSearch(false) }} 
+                    onChange={onUsersSearch}></input>
+                <section className={style.navigation}>
+                    <ul className={style.navigation_list}>
+                        <li>
+                            <NavLink to="/chat">
+                                <img src={chat_img} alt="#"
+                                    style={{
 
-                "marginLeft": "20px",
-                "display" : "inline-block",
-                "marginTop" : "17px",
-                "position" : "absolute"
-            }}>
+                                    }} onClick={() => {
+                                    }} />
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/me">
+                                <img src={profile} alt="#" />
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/news">
+                                <img src={home} alt="" />
+                            </NavLink>
+                        </li>
+                        <li>
+                            <img src={upload} alt="" onClick={navihate_to_upload} />
+                        </li>
+                        <li>
 
+                            {is_auth ? <img src={logout_img} alt="" onClick={logout} /> : null}
+                        </li>
+                    </ul>
+                </section>
+            </div>
+            <hr style={{ "width": "900px", "marginTop": "0px" }} />
+        </section>
 
-                <li>
-                    <NavLink to="/chat">
-                        <img src={chat_img} alt="#"
-                            style={{
-                                "width": "25px",
-                                "height": "25px",
-                                "marginLeft" : "10px",
-                            }} onClick={() => {
-                            }} />
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to="/me">
-                        <img src={profile} alt="#" style={{
-                            "width": "25px",
-                            "height": "25px",
-                            "marginLeft" : "10px"
-                        }} />
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to="/news">
-                        <img src={home} alt="" style={{
-                            "width": "22px",
-                            "height": "22px",
-                            "marginLeft" : "10px"
-                        }} />
-                    </NavLink>
-                </li>
-                <li>
-                    <img src={upload} alt="" style={{
-                        "width": "22px",
-                        "height": "22px",
-                        "marginLeft" : "10px"
-                    }} onClick={navihate_to_upload}/>
-                </li>
-                <li>
-
-                    {is_auth ? <img src={logout_img} alt="" onClick={logout} style={{
-                        "width": "22px",
-                        "height": "22px",
-                        "marginLeft" : "10px"
-                    }} /> : null}
-                </li>
-            </ul>
-              <hr style={{"maxWidth" : "900px","marginLeft" : "-1vh"}}/>  
-        </div>
     )
 });
 const MapStateToProps = (state: Global_state_type) => {

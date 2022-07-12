@@ -37,7 +37,7 @@ const Coments: React.FC<ComentsType> = (props) => {
     const leave_coment = (e: any) => {
         Db_instance.add_coment(user_name, text, user_id, props.curent_post_id)
     }
-    console.log(props.coments)
+
     return (
         <div className={style.coment_container}>
             <h3 className={style.h_coment}>Coments : </h3>
@@ -72,7 +72,6 @@ type Showed_posts_props = {
     user_name: string | null | undefined
 }
 export const SinglePost: React.FC<Showed_posts_props> = (props) => {
-    console.log(props.showed_post[0].coments)
     return (
         <div className={style.post_container}>
             <div className={styles.user_info}>

@@ -41,6 +41,7 @@ export const initialize = () =>  async (dispatch:any) => {
     try{
         await Firebase_instance.get_current_user().then((result) => {
         if(result){
+            console.log(result)
             let user: Current_ProfileType = {
                 user_name: result?.displayName,
                 email: result?.email,

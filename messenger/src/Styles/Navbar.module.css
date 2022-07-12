@@ -1,3 +1,13 @@
+.navbar {
+    margin-left: 24%;
+    max-width: 900px;
+    margin-bottom: 0px;
+    display: grid;
+    gap: 5vh;
+    grid-template-columns: 150px auto 290px;
+    grid-template-areas: 
+    "L UL N"
+}
 .navbar  ul{
     list-style: none;
     color: white;
@@ -12,7 +22,6 @@
     padding-right: 15px;
 }
 .navbar {
-    margin-left: 23%;
     padding: 0;
     text-align: center;
     
@@ -21,14 +30,12 @@
     display: inline-block;
 }
 .navbar_input{
-
-    margin-top : 15px;
-    margin-bottom: 10px;
+    grid-area: UL;
     border-radius: 5px;
-    display: inline-block;
+    margin-top: 20px;
     background-color: rgb(192, 201, 201);
     border-style: none;
-    margin-left : -30vh;
+
     border-width: 1px;
     height: 30px;
     width: 100px;
@@ -39,7 +46,28 @@
 .navbar_input:focus{
     border: none;
     border-width: 1px;
-    width: 200px;
+    width: 350px;
     font-size: medium;
     color: rgb(74, 73, 73);
+}
+.logo{
+
+    grid-area: L;
+    height : 40px;
+    margin-top: 20px;
+    display: inline;
+}
+.navigation{
+    grid-area: N;
+}
+.navigation_list{
+    height: 25px;
+    display: inline-block;
+    margin-top: 27px;
+
+}
+.navigation img{
+    width: 25px;
+    height: 25px;
+    margin-left: 10px;
 }

@@ -5,7 +5,7 @@ import "firebase/firestore";
 import "firebase/auth";
 //Firebase hooks 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
 import {
     getAuth,
     signOut,
@@ -17,8 +17,8 @@ import {
     signInWithCredential,
 } from "firebase/auth";
 import { auth_actions } from "../Redux/auth_reducer";
-import { collection, getDocs, getFirestore, query, snapshotEqual } from "firebase/firestore";
-import { getDatabase, set, onValue, ref, child, get, push, update } from "firebase/database";
+import { collection, getDocs, getFirestore, orderBy, query, snapshotEqual } from "firebase/firestore";
+import { getDatabase, set, onValue, ref, child, get, push, update,query as db_query, orderByChild, Database, orderByKey, equalTo, startAt } from "firebase/database";
 import { useDispatch } from "react-redux";
 import { makeid } from "./Randomizer";
 import { getDownloadURL, getStorage } from "firebase/storage";
@@ -88,6 +88,7 @@ export const Db_instance = {
         const post_ref = await ref(dataBase, "Posts/");
         const posts = await onValue(post_ref, (snap) => {
             const data = snap.val();
+            
         })
 
         return posts;
@@ -95,6 +96,7 @@ export const Db_instance = {
     get_posts_2: async (user_id: string | null | undefined) => {
         const Db_ref = ref(getDatabase());
         const posts: Array<any> = [];
+
         await get(child(Db_ref, "Users/" + user_id + "/posts/")).then((snap) => {
             snap.forEach((el) => {
                 posts.push({
@@ -135,7 +137,7 @@ export const Db_instance = {
                         likes_count: 0,
                         createdAt: new Date().getDate(),
                         id: new_post_key,
-                        coments: {
+                        coments: {  
                             coment: ""
                         }
 
@@ -203,13 +205,20 @@ export const Db_instance = {
             console.log(ex);
         }
     },
-    get_users: async () => {
-        const Db_ref = ref(getDatabase());
-        let users = await get(child(Db_ref, "Users/")).then((response) => {
-            console.log(response.val());
-        }).catch((error) => {
-            console.log(error)
-        })
+    get_users_2 : async () => {
+        const database = getDatabase();
+        let users_ref = ref(database,"Users/");
+        let result = db_query(users_ref,orderByChild("Users/"));
+        console.log(result)
+    },
+    get_users: async (user_name:string) => {
+        const database = getDatabase();
+        let users_ref = ref(database,"Users/");
+        let result = get(db_query(users_ref,orderByChild("fullName/"),equalTo(user_name))).then((res) => {
+            console.log(res.val())
+            return res;
+        });
+        
     }
 }
 
@@ -224,8 +233,18 @@ export const Firebase_instance = {
             console.log("ERROR WHILE SIGING OUT " + error)
         })
     },
-    create_user: (_auth: AuthType, _email: string, _password: string) => {
+    create_user: (_auth: AuthType, _email: string, _password: string,fullName : string,avatar:any) => {
         createUserWithEmailAndPassword(Firebase_auth, _email, _password).then((response) => {
+            const user = {
+                fullName : fullName,
+                avatar : avatar,
+                posts : {},
+                status : null,
+                followers : {},
+                subscribers : {},
+                chat : {},
+                
+            }
             console.log(response);
             return response;
         })

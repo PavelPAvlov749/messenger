@@ -12,6 +12,7 @@ import { signOut } from "firebase/auth";
 import { app_actions } from "./app_reducer";
 import { initialize } from "./app_reducer";
 import { Firebas_auth } from "../DAL/Firebase_auth";
+import { getDatabase, ref, get ,update} from "firebase/database";
 
 
 
@@ -32,28 +33,28 @@ const CREATE_USER = "messenger/auth_reducer/create_user";
 let initial_state: initial_state_type = {
     is_auth: false,
     auth_token: "",
-    is_initialize : false,
-    user_id : undefined 
+    is_initialize: false,
+    user_id: undefined
 }
 type initial_state_type = {
     is_auth: boolean,
     auth_token?: string | undefined,
-    is_initialize : boolean,
-    user_id? : string | undefined
+    is_initialize: boolean,
+    user_id?: string | undefined
 }
 
 export const auth_reducer = (state = initial_state, action: Action_Type) => {
     switch (action.type) {
-        case CREATE_USER : {
+        case CREATE_USER: {
             return {
                 ...state,
-                user_id : action.payload
+                user_id: action.payload
             }
         }
-        case IS_INITIALIZE : {
+        case IS_INITIALIZE: {
             return {
                 ...state,
-                is_initialize : true
+                is_initialize: true
             }
         }
         case SET_AUTH_TRUE: {
@@ -92,20 +93,41 @@ export const auth_actions = {
         type: "messenger/auth_reducer/set_token",
         payload: _token
     } as const),
-    initialize : () => ({
-        type : "messenger/auth_reducer/initialize"
-    }as const),
-    create_user : (_user_id:string) => ({
-        type : "messenger/auth_reducer/create_user",
-        payload : _user_id
+    initialize: () => ({
+        type: "messenger/auth_reducer/initialize"
+    } as const),
+    create_user: (_user_id: string) => ({
+        type: "messenger/auth_reducer/create_user",
+        payload: _user_id
     } as const)
 }
 
 //Thunk creators to log in
 //Thunk for Signing in with Firebase GooglePopUp
 export const Sign_in_with_pop_up = (): Thunk_type => {
-    return async function (dispatch:any) {
+    return async function (dispatch: any) {
         await signInWithPopup(Firebase_auth, google_provider).then((response) => {
+            const db_ref = getDatabase();
+            const user_ref = ref(db_ref, "Users/" + Firebase_auth.currentUser?.uid);
+            get(user_ref,).then((response) => {
+                if(response.val() === null || response.val() === undefined){
+                    console.log("ADDING NEW USER")
+                    const new_user = {
+                        fullName : Firebase_auth.currentUser?.displayName,
+                        posts : {},
+                        status : null,
+                        foloowers : {},
+                        subscribes : {},
+                        userID : Firebase_auth.currentUser?.uid,
+                        avatar : Firebase_auth.currentUser?.photoURL
+                    };
+                    const updates :any = {};
+                    updates["Users/" + Firebase_auth.currentUser?.uid] = new_user;
+                    return update(ref(db_ref), updates);
+                }
+            })
+
+
             let credential = GoogleAuthProvider.credentialFromResult(response);
             let auth_token = credential?.accessToken;
             if (auth_token?.length) {
@@ -140,15 +162,15 @@ export const Log_out_thunk = (): Thunk_type => {
 }
 //GET AUTH STATE :
 
-export const CheckAuthState = ():Thunk_type => {
-    return async function (dispatch)  {
+export const CheckAuthState = (): Thunk_type => {
+    return async function (dispatch) {
         //Set is initizialize false while user request not resolve
-        await Firebase_instance.Get_auth_state(Firebase_auth,(user) => {
-            if(user){
+        await Firebase_instance.Get_auth_state(Firebase_auth, (user) => {
+            if (user) {
                 dispatch(auth_actions.set_auth_true());
                 dispatch(auth_actions.set_auth_token(""))
                 dispatch(auth_actions.initialize())
-            }else{
+            } else {
                 dispatch(auth_actions.set_auth_false());
                 dispatch(auth_actions.set_auth_token(""));
                 dispatch(auth_actions.initialize())
@@ -158,17 +180,19 @@ export const CheckAuthState = ():Thunk_type => {
 }
 //Creating new user thunk get the email and password from the form in login component
 //Then uses Firbase auth insatnce
-export const create_user_thunk = (_email:string,_password : string) : Thunk_type => {
-    return async (dispatch) =>{
-        Firebas_auth.create_user_with_email_and_password(_email,_password).then((res) => {
+export const create_user_thunk = (_email: string, _password: string): Thunk_type => {
+    return async (dispatch) => {
+        Firebas_auth.Sign_in_with_email_and_password(_email, _password).then((res) => {
             //if new user was created dispatch new user id in store otherwise throw error
-            if(res){
+            if (res) {
                 dispatch(auth_actions.create_user(res?.uid))
-                
-            }else{
+                dispatch(auth_actions.set_auth_token(res.refreshToken))
+                dispatch(auth_actions.set_auth_true());
+
+            } else {
                 console.log("Error")
             }
-            
+
         })
     }
 }

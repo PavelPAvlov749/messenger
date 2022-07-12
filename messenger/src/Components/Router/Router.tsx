@@ -26,7 +26,8 @@ const POST = "/post/:id"
 //Types for routes array (object containing properties path(string) and React element coresponding to current path)
 type RouteType = {
     path : string,
-    element : React.ReactElement
+    element : React.ReactElement,
+    key : string
 }
 //Types for Router component props
 type RouterProps = {
@@ -38,42 +39,51 @@ type RouterProps = {
 const PUBLICK_ROUTES : Array<RouteType>= [
     {
         path : LOGIN,
-        element : <Login_container/>
+        element : <Login_container/>,
+        key : LOGIN
     },
     {
         path : no_match_route,
-        element : <Navigate to="/login" replace/>
+        element : <Navigate to="/login" replace/>,
+        key : no_match_route
     }
 ]
 //Routes available only for authorized users
 const PRIVATE_ROUTES = [
     {
         path: POST,
-        element : <Show_post_container/>
+        element : <Show_post_container/>,
+        key : POST
     },
     {
         path: NEW_POST,
-        element : <New_post_page/>
+        element : <New_post_page/>,
+        key : NEW_POST
     },
     {
         path: LOGIN,
-        element : <Navigate to="/me" replace/>
+        element : <Navigate to="/me" replace/>,
+        key : LOGIN
     },
     {
         paht : NEWS,
-        element : null
+        element : null,
+        key : NEWS
     },
     {
         path : USERS,
-        element : null
+        element : null,
+        key : USERS
     },
     {
         path : ME,
-        element : <My_profile_container/>
+        element : <My_profile_container/>,
+        key : ME
     },
     {
         path : CHAT,
-        element : <Chat_container/>
+        element : <Chat_container/>,
+        key : CHAT
     },
 ]
 
@@ -88,7 +98,7 @@ export const Router : React.FC<RouterProps> = (props) => {
             <Routes>
                 {PRIVATE_ROUTES.map((el) => {
                     return (
-                        <Route path={el.path} element={el.element} key={el.paht}/>
+                        <Route path={el.path} element={el.element} key={el.path}/>
                     )
                 })}
             </Routes>

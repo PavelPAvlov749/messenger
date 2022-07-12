@@ -44,9 +44,6 @@ const Information: React.FC<InfoPropsType> = (props) => {
     const avatar = useSelector((state: Global_state_type) => {
         return state.profile.profile.avatar
     })
-    const get_img = () => {
-        get_img_list()
-    }
     return (
         <div className={styles.about_user}>
             <section className={styles.avatar}>
@@ -54,10 +51,7 @@ const Information: React.FC<InfoPropsType> = (props) => {
             </section>
             <section className={styles.info}>
                 <h2>{props.name}</h2>
-
-                <button type="button" className={styles.send_message}>Send message</button>
-                <button type="button" className={styles.follow}>Follow</button>
-                <button type="button" className={styles.properties} onClick={get_img}>...</button>
+                <button type="button" className={styles.properties}>...</button>
                 <br />
                 <UserStatus user_id={props.user_id}status={status} get_status={props.get_status} set_new_status={props.update_status} />
                 <br />
