@@ -159,7 +159,7 @@ export const Db_instance = {
     },
     get_status: async (_user_id: string | null | undefined) => {
         const Db_ref = ref(getDatabase());
-        let status = await get(child(Db_ref, "Users/" + _user_id + "/status/status/")).then((snap) => {
+        let status = await get(child(Db_ref, "Users/" + _user_id + "/status")).then((snap) => {
             return snap.val()
         })
         return status
@@ -168,9 +168,7 @@ export const Db_instance = {
         try {
             if (status.length > 0) {
                 const Db_ref = getDatabase();
-                const status_data = {
-                    status: status
-                }
+                const status_data = status
                 const updates: any = {};
                 updates["Users/" + _user_id + "/status/"] = status_data;
                 return update(ref(Db_ref), updates);
@@ -205,20 +203,26 @@ export const Db_instance = {
             console.log(ex);
         }
     },
-    get_users_2 : async () => {
+    get_user_page_by_id : async (userID:string) => {
         const database = getDatabase();
-        let users_ref = ref(database,"Users/");
-        let result = db_query(users_ref,orderByChild("Users/"));
-        console.log(result)
+        let users_ref = ref(database,"Users/" + userID);
+        let result = await get(db_query(users_ref));
+
+       console.log(result.val())
+       return result
     },
     get_users: async (user_name:string) => {
         const database = getDatabase();
         let users_ref = ref(database,"Users/");
-        let result = get(db_query(users_ref,orderByChild("fullName/"),equalTo(user_name))).then((res) => {
-            console.log(res.val())
-            return res;
-        });
+        let result = await get(db_query(users_ref,orderByChild("fullName/"),equalTo(user_name)));
+        return result.val();
+    },
+    follow : async (userID:string) => {
+        const database = getDatabase();
         
+    },
+    unfollow : async (userID : string) => {
+        const database = getDatabase();
     }
 }
 
@@ -243,7 +247,7 @@ export const Firebase_instance = {
                 followers : {},
                 subscribers : {},
                 chat : {},
-                
+
             }
             console.log(response);
             return response;
@@ -260,7 +264,6 @@ export const Firebase_instance = {
             const error_code = error.code;
             console.log("SOME ERROR OCCURED" + error);
         })
-
     },
     get_current_user: async () => {
         const user = await Firebase_auth.currentUser;

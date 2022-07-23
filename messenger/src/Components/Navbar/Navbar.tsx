@@ -6,6 +6,7 @@ import { Firebase_instance } from "../../DAL/Firebase_config";
 import { auth_actions, Log_out_thunk } from "../../Redux/auth_reducer";
 import { connect } from "react-redux";
 import { Db_instance } from "../../DAL/Firebase_config";
+import { getUsersThunk } from "../../Redux/Users_reducer";
 //IMPORTING INTERFACE ICONS
 import style from "../../Styles/Navbar.module.css";
 import chat_img from "../../Media/Chat.png";
@@ -13,13 +14,15 @@ import profile from "../../Media/Profile.png";
 import home from "../../Media/Home.png"
 import upload from "../../Media/Upload.png";
 import logout_img from "../../Media/Logout.png";
-import logo from '../../Media/Logo.jpg'
+import logo from '../../Media/logo2.jpg'
 import { UsersType } from "../../Redux/profile_reducer";
+import { UsersSearch } from "./Users_search";
 
 
 
 type PropsType = {
-    log_out: () => void
+    log_out: () => void,
+    getUsers : (userName :string) => void
 }
 type userPageMiniPropsType = {
     fullName : string,
@@ -56,6 +59,9 @@ const userList: React.FC<userListPropsType> = (props) => {
     )
 }
 export const Navbar: React.FC<PropsType> = React.memo((props) => {
+    const userPage = useSelector((state:Global_state_type) => {
+        return state.users.users
+    })
     let [search_input,set_search_input] = useState(null)
     const location = useNavigate();
     const navihate_to_upload = () => {
@@ -72,7 +78,7 @@ export const Navbar: React.FC<PropsType> = React.memo((props) => {
     //Handler Functions
     const onUsersSearch = (e:any) => {
         set_search_input(e.currentTarget.value)
-        Db_instance.get_users(e.currentTarget.value);
+        props.getUsers(e.currentTarget.value);
         console.log(search_input)
     }
     
@@ -80,8 +86,7 @@ export const Navbar: React.FC<PropsType> = React.memo((props) => {
         <section className={style.navbar_container}>
             <div className={style.navbar}>
                 <img src={logo} alt="" className={style.logo} />
-                <input placeholder=" Search" className={style.navbar_input} onClick={() => { setOnSearch(true) }} onBlur={() => { setOnSearch(false) }} 
-                    onChange={onUsersSearch}></input>
+                <UsersSearch getUsers={props.getUsers}/>
                 <section className={style.navigation}>
                     <ul className={style.navigation_list}>
                         <li>
@@ -120,13 +125,16 @@ export const Navbar: React.FC<PropsType> = React.memo((props) => {
 });
 const MapStateToProps = (state: Global_state_type) => {
     return {
-
+        user : state.users
     }
 }
 const MapDispatchToProps = (dispatch: any) => {
     return {
         log_out: () => {
             dispatch(Log_out_thunk());
+        },
+        getUsers : (userName : string) => {
+            dispatch(getUsersThunk(userName))
         }
     }
 }

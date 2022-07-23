@@ -7,10 +7,14 @@ import { get_posts_thunk } from "./posts_reducer";
 import { GithubAuthProvider } from "firebase/auth";
 import { get_status_thunk } from "./profile_reducer";
 import { Get_current_user_thunk } from "./profile_reducer";
+
 const SET_INITIALIZE = "SET_INITIALIZE";
+const SET_IS_FETCH_TRUE = "messenger/app_reducer/set_is_fetch_true";
+const SET_IS_FETCH_FALSE = "messenger/app_reducer/set_is_fetch_false";
 
 let initial_state = {
     is_initialize : false,
+    is_fetch : false
 }
 //Acrtion types
 type Action_Type = InferActionType<typeof app_actions>;
@@ -21,6 +25,18 @@ export const app_reducer = (state = initial_state,action:Action_Type) => {
             return {
                 ...state,
                 is_initialize : true
+            }
+        }
+        case SET_IS_FETCH_TRUE : {
+            return {
+                ...state,
+                is_fetch : true
+            }
+        }
+        case SET_IS_FETCH_FALSE : {
+            return {
+                ...state,
+                is_fetch : false
             }
         }
         default : 
@@ -34,7 +50,18 @@ export const app_actions = {
         {
             type : "SET_INITIALIZE",
         
-    } as const )
+    } as const ),
+    set_is_fetch_true : () => (
+        {
+            type : "messenger/app_reducer/set_is_fetch_true",
+        
+    } as const ),
+    set_is_fetch_fasle : () => (
+        {
+            type : "messenger/app_reducer/set_is_fetch_false",
+        
+    } as const ),
+    
 }
 
 export const initialize = () =>  async (dispatch:any) => {

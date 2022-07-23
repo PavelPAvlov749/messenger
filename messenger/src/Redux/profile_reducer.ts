@@ -115,6 +115,7 @@ export const Get_current_user_thunk = (): Thunk_type => {
                     current_user_posts: null,
                     current_user_status: null,
                     phone: result?.phoneNumber,
+                    
                 };
                 dispatch(profile_actions.set_current_user_profile(user))
             }
@@ -127,6 +128,7 @@ export const get_status_thunk = (_user_id:string | null | undefined) => {
     return async function (dispatch:any) {
         await Db_instance.get_status(_user_id).then((response) => {
             if(response){
+                console.log("STATUS IS : " + response)
                 dispatch(profile_actions.get_status(response))
             }    
         })

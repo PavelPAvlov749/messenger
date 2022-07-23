@@ -9,6 +9,7 @@ import { My_profile_container } from "../My_profile/My_profile";
 import { New_post_page } from "../Post/New_post";
 import { SinglePost } from "../Post/Show_post";
 import { Show_post_container } from "../Post/Show_post";
+import { UserPageContainer } from "../Profile_page/User_page";
 
 //PATH ROUTES CONSTANTS 
 const LOGIN = "/login"
@@ -50,6 +51,11 @@ const PUBLICK_ROUTES : Array<RouteType>= [
 ]
 //Routes available only for authorized users
 const PRIVATE_ROUTES = [
+    {
+        path : USER_PROFILE,
+        element : <UserPageContainer/>,
+        key : USER_PROFILE
+    },
     {
         path: POST,
         element : <Show_post_container/>,

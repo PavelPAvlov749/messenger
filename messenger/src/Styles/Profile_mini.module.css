@@ -1,0 +1,27 @@
+.onSearchUserslist{
+
+}
+.mini_avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 180px;
+    display: inline;
+
+}
+.profile_mini_container{
+    text-align: left;
+    padding: 0px;
+    height: 70px;
+    margin-bottom: 0%;
+    margin-left: 7px;
+    margin-top: 2px;
+    width: 97%;
+    border-radius: 5px;
+    background-color: rgba(68, 67, 67, 0.456);
+}
+.profile_mini_container button {
+    width: 60px;
+    height: 25px;
+    margin-left: 14vh;
+    font-size: x-small
+}

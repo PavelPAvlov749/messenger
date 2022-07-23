@@ -1,5 +1,5 @@
 .post_container {
-    margin-left: 20%;
+    margin-left: 50vh;
     width: 900px;
     display: grid;
     text-align: left;
@@ -41,8 +41,9 @@
     position: relative;
     grid-area: I;
     width: 550px;
-    max-height: 550px;
-    object-fit: contain;
+    height: 550px;
+    object-fit: cover;
+    
 }
 
 .post_img:hover{
@@ -50,27 +51,32 @@
 }
 .coment_text_area {
     grid-area: T;
+    
 }
 .coment_container{
+    margin-left: -3vh;
     display: grid;
-    grid-area: auto;
-    grid-template-rows: 40px 325px ;
+    grid-template-rows: 32px 300px 200px ;
     grid-template-areas:
     "H"
     "S"
     "C"
     "T";
+    overflow-y: scroll;
 }
 .h_coment {
     grid-area: H;
     display: inline;
     margin-left: -1.5vh;
     font-weight: 600;
+   
 }
 .span_coment {
     grid-area: S;
+    
 }
 .coment_container textarea {
+    
     border: none;
     border-radius: 5px;    
     background-color: lightgrey;
@@ -82,6 +88,7 @@
     border: none;
 }
 .single_coment_container{
+    overflow-y: scroll;
     grid-area: C;
 }
 .single_coment { 

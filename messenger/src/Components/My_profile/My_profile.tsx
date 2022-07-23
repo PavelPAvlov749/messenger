@@ -8,8 +8,9 @@ import { UserStatus } from "../../Components/Status/Status";
 import { get_status_thunk } from "../../Redux/profile_reducer";
 import { update_status_thunk } from "../../Redux/profile_reducer";
 import {get_images_URL,get_img_list} from "../../DAL/Cloud_storage";
+import { useLocation } from "react-router-dom";
 
-
+export const default_avatar = "https://i.stack.imgur.com/rYsym.png";
 type MyProfilePropsType = {
     current_user_profile: Current_ProfileType,
     user_id : string,
@@ -39,7 +40,9 @@ const Information: React.FC<InfoPropsType> = (props) => {
         console.log("SETTED")
     }
 
-    const default_avatar = "https://i.stack.imgur.com/rYsym.png";
+    const location = useLocation();
+    
+
 
     const avatar = useSelector((state: Global_state_type) => {
         return state.profile.profile.avatar

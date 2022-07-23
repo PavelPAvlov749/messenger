@@ -45,28 +45,55 @@
 }
 .navbar_input:focus{
     border: none;
+    outline: none;
+    border-style: none;
     border-width: 1px;
     width: 350px;
     font-size: medium;
     color: rgb(74, 73, 73);
 }
+.users_search_loader{
+    margin-top: 3px;
+    margin-left: 6px;
+    height: 3px;
+    border-radius: 90px;
+    width: 95%;
+    animation: load 2s infinite;
+    background-color: rgb(179, 121, 234);
+
+
+}
+@keyframes load{
+    25%{
+        margin-left: 90px;
+    }
+    50%{
+      width: 0px;
+      margin-right:10px;
+    }
+    100%{
+        width: -40px;
+    }
+  }
 .logo{
 
     grid-area: L;
-    height : 40px;
-    margin-top: 20px;
+    height : 60px;
+    margin-top: 0px;
     display: inline;
 }
 .navigation{
     grid-area: N;
+    
 }
 .navigation_list{
     height: 25px;
-    display: inline-block;
-    margin-top: 27px;
+    display: inline;
+    margin-top: 0px;
 
 }
 .navigation img{
+    margin-top: 25px;
     width: 25px;
     height: 25px;
     margin-left: 10px;
