@@ -1,11 +1,8 @@
-import { stat } from "fs";
 import { PostType } from "../Components/Post/Posts_types";
 import { Db_instance, Firebase_instance } from "../DAL/Firebase_config";
+import { app_actions } from "./app_reducer";
 import { Thunk_type } from "./auth_reducer";
 import { InferActionType } from "./Store";
-import { Firestore_instance } from "../DAL/Firestore_config";
-import { profile } from "console";
-import { response } from "express";
 
 
 
@@ -29,9 +26,6 @@ export type Current_ProfileType = {
     messages?: Array<string> | null,
     current_user_posts?: Array<PostType> | null,
     current_user_status?: string | null,
-    is_online?: boolean,
-    isAnonymoys?: boolean | undefined,
-    phone?: string | null | undefined,
     email?: string | null | undefined,
 }
 type initial_state_type = {
@@ -42,15 +36,13 @@ type initial_state_type = {
 
 let initial_state : initial_state_type = {
     profile: {
-        user_name: "",
-        id: "",
-        avatar: "",
+        user_name: null,
+        id: null as unknown as string,
+        avatar: null,
         followers: null,
         subscribers: null,
         messages: null,
-        current_user_posts: null,
         current_user_status: null,
-        is_online: false,
     },
     status : "No status yet",
     messages : []
@@ -98,26 +90,23 @@ export const profile_actions = {
 
 }
 //Get user profile thunk
-export const Get_current_user_thunk = (): Thunk_type => {
+export const Get_current_user_thunk = (userID:string): Thunk_type => {
     return async function (dispatch: any) {
-        const result = await Firebase_instance.get_current_user().then((result) => {
+        dispatch(app_actions.set_is_fetch_true())
+        const result = await Db_instance.get_user_page_by_id(userID).then((result) => {
+            console.log(result.val())
             if(result){
                 let user: Current_ProfileType = {
-                    user_name: result?.displayName,
-                    email: result?.email,
-                    id: result.uid,
-                    avatar: result.photoURL,
-                    followers: null,
-                    subscribers: null,
-                    messages: null,
-                    isAnonymoys: result?.isAnonymous,
-                    is_online: true,
-                    current_user_posts: null,
-                    current_user_status: null,
-                    phone: result?.phoneNumber,
-                    
+                    user_name: result.val().fullName,
+                    id: result.val().userID,
+                    avatar: result.val().avatar,
+                    followers: result.val().followers,
+                    subscribers: result.val().subscribers,
+                    messages: result.val().messages,
+                    current_user_status: result.val().status,
                 };
                 dispatch(profile_actions.set_current_user_profile(user))
+                dispatch(app_actions.set_is_fetch_fasle())
             }
         })
 

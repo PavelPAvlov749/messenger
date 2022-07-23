@@ -7,29 +7,11 @@ import styles from "../../Styles/Profile.module.css";
 import { UserStatus } from "../../Components/Status/Status";
 import { get_status_thunk } from "../../Redux/profile_reducer";
 import { update_status_thunk } from "../../Redux/profile_reducer";
-import {get_images_URL,get_img_list} from "../../DAL/Cloud_storage";
 import { useLocation } from "react-router-dom";
-
+import {MyProfilePropsType,InfoPropsType} from "./Profile_types"
 export const default_avatar = "https://i.stack.imgur.com/rYsym.png";
-type MyProfilePropsType = {
-    current_user_profile: Current_ProfileType,
-    user_id : string,
-    get_current_user: () => void,
-    get_status: (user_id: string | null | undefined) => void,
-    update_status : (user_id:string,status_text : string) => void
-}
 
-type InfoPropsType = {
-    user_id : string,
-    age: number,
-    name: string | null | undefined,
-    number_of_subscribers: number,
-    number_of_folowers: number,
-    is_auth?: boolean,
-    get_status: (user_id: string | null | undefined) => void,
-    update_status : (user_id:string,status_text : string) => void
 
-}
 
 //USER info render component
 const Information: React.FC<InfoPropsType> = (props) => {
@@ -39,10 +21,6 @@ const Information: React.FC<InfoPropsType> = (props) => {
     const set_avatar = () => {
         console.log("SETTED")
     }
-
-    const location = useLocation();
-    
-
 
     const avatar = useSelector((state: Global_state_type) => {
         return state.profile.profile.avatar
@@ -71,35 +49,35 @@ const Information: React.FC<InfoPropsType> = (props) => {
 //wtrapper component for renfer Profile
 
 export const My_profile: React.FC<MyProfilePropsType> = (props) => {
-    const user_id = useSelector((state: Global_state_type) => {
-        return state.profile.profile.id
-    })
+
     useEffect(() => {
-        props.get_current_user();
-    }, [])
+        props.get_current_user(props.user_id as string);
+    }, [props.user_id])
     useEffect(() => {
-        props.get_status(user_id)
+        props.get_status(props.user_id)
     }, [])
 
     return (
         <div className={styles.my_profile}>
-            <Information update_status={props.update_status} user_id={props.user_id}get_status={props.get_status} age={20} name={props.current_user_profile.user_name} number_of_folowers={167} number_of_subscribers={560} />
+            <Information update_status={props.update_status} user_id={props.user_id as string}get_status={props.get_status} age={20} name={props.current_user_profile.user_name} number_of_folowers={167} number_of_subscribers={560} />
             <PostsContainer />
         </div>
 
     )
 }
 
+
 let MapStateToProps = (state: Global_state_type) => {
     return {
         current_user_profile: state.profile.profile,
-        user_id : state.profile.profile.id
+        user_id : state.app.currentUserID,
+
     }
 }
 let MapDispatchToProps = (dispatch: any) => {
     return {
-        get_current_user: () => {
-            dispatch(Get_current_user_thunk());
+        get_current_user: (userID:string) => {
+            dispatch(Get_current_user_thunk(userID));
         },
         get_status: (user_id: string | null | undefined) => {
             dispatch(get_status_thunk(user_id))

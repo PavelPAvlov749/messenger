@@ -26,17 +26,18 @@ type InfoPropsType = {
 type UserPagePropsType = {
     userPage : UserType | null,
     getUserPage : (userID : string) => void,
-    setShowedPost : (postID : string) => void
+    setShowedPost : (postID : string) => void,
+    currentUser : string | null | undefined,
 }
 //USER info render component
-const Information: React.FC<{user : UserType | null}> = (props) => {
+const Information: React.FC<{user : UserType | null,currentUser : string}> = (props) => {
     console.log(props.user?.status)
     const status = props.user?.status
     const user = useSelector((state:Global_state_type) => {
         return state.users.users
     })
     const Follow_user = () => {
-        
+        Db_instance.follow(props.currentUser,props.user?.userID as string)
     }
     console.log(user)
     return (
@@ -86,7 +87,7 @@ const UsersPage: React.FC<UserPagePropsType> = (props) => {
 
         return (
             <div className={styles.my_profile}>
-                <Information user={props.userPage}/>
+                <Information user={props.userPage} currentUser={props.currentUser as string}/>
                 <div className={styles.User_posts}>
                 {posts.map((el) => {
                     return (
@@ -100,7 +101,7 @@ const UsersPage: React.FC<UserPagePropsType> = (props) => {
     }else{
         return (
             <div className={styles.my_profile}>
-                <Information user={props.userPage}/>
+                <Information user={props.userPage} currentUser={props.currentUser as string}/>
     
             </div>
         )
@@ -109,6 +110,8 @@ const UsersPage: React.FC<UserPagePropsType> = (props) => {
 const MapStateToProps = (state : Global_state_type) => {
     return {
         userPage : state.users.users,
+        currentUser : state.app.currentUserID,
+    
     }
 }
 const MapDispatchToProps = (dispatch:any) => {
